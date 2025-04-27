@@ -3,8 +3,8 @@ import "./globals.css";
 
 // 1. IMPORTAMOS TUS COMPONENTES DE HEADER Y FOOTER
 // (Asegúrate de usar la ruta correcta donde estén tus archivos Header y Footer)
-import Header from "./componentes/Header";
-import Footer from "./componentes/Footer";
+import Header from "../componentes/Header";
+import Footer from "../componentes/Footer";
 
 const ruwudu = Ruwudu({
   subsets: ['latin'], // Especifica los subconjuntos de caracteres que necesitas
@@ -37,28 +37,53 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
-      {/* 
-        2. Agregamos clases de Tailwind para que el body sea un contenedor flex 
-        y ocupe toda la altura de la ventana:
-          - flex flex-col: ordena los elementos en columna
-          - min-h-screen: ocupa al menos la altura total de la pantalla
-          - m-0 p-0: elimina márgenes y paddings por defecto 
-      */}
+      {/* El body es el contenedor flex principal que gestiona la altura */}
       <body className={`${mulish.variable} ${ruwudu.variable} ${signika.variable} antialiased flex flex-col min-h-screen m-0 p-0`}>
-        {/* 3. AGREGAMOS EL HEADER AL INICIO */}
+
+        {/* Contenedor del Video de Fondo Global */}
+        {/* Posicionado fijo para cubrir toda la ventana gráfica, z-index muy bajo para estar detrás de todo */}
+        {/* overflow-hidden para evitar barras de scroll si el video es ligeramente más grande que la ventana */}
+        <div className="fixed inset-0 -z-20 overflow-hidden"> {/* z-index -20 para asegurar que esté bien al fondo */}
+          {/* Elemento de Video HTML5 */}
+          <video
+            autoPlay      // Inicia la reproducción automáticamente
+            loop          // Reproduce en bucle continuo
+            muted         // Sin sonido (esencial para que autoPlay funcione en la mayoría de navegadores sin interacción del usuario)
+            playsInline   // Importante para reproducción en línea en dispositivos móviles
+            className="object-cover w-full h-full" // Cubre el área del contenedor manteniendo la relación de aspecto
+          >
+            {/* Etiqueta <source> para especificar el archivo de video */}
+            {/* **¡IMPORTANTE! Reemplaza la ruta '/videos/global-background.mp4'** con la ruta real de tu archivo de video
+               dentro de la carpeta `public` de tu proyecto.
+               Asegúrate también de que el `type` sea correcto para el formato de tu video (ej: 'video/mp4', 'video/webm').
+            */}
+            <source src="/bgvideo3.mp4" type="video/mp4" /> {/* <-- REEMPLAZA ESTA LÍNEA */}
+            {/* Texto de fallback para navegadores que no soportan el elemento <video> */}
+            Tu navegador no soporta el elemento de video.
+          </video>
+        </div>
+
+        {/* Overlay Global sobre el Video */}
+        {/* Posicionado fijo, cubre toda la ventana, z-index bajo (entre el video y el contenido) */}
+        {/* bg-black con una opacidad ajustada. Ajusta la opacidad (`opacity-50`) según qué tan oscuro quieras el fondo. */}
+        <div className="fixed inset-0 bg-black opacity-30 -z-10"> {/* <-- Ajusta la opacidad si es necesario */}</div> {/* z-index -10 para estar sobre el video pero debajo del contenido */}
+
+        {/* Contenido Principal de la Página (Header, Contenido de las secciones, Footer) */}
+        {/* Estos elementos tendrán un z-index por defecto (0) o superior, colocándolos automáticamente por encima del fondo y el overlay con z-index negativo. */}
+
         <Header />
 
-        {/* 
-          4. AQUI SE RENDERIZAN LAS DIFERENTES PÁGINAS (children)
-          Agregamos 'flex-grow' para que este contenedor
-          empuje el footer al final de la página.
+        {/* Contenedor <main> donde se renderizan las secciones específicas de la página */}
+        {/* **Eliminamos el color de fondo bg-[#fffafa]** para que el video de fondo sea visible detrás de las secciones,
+           a menos que las secciones mismas tengan su propio color de fondo.
+           Si algunas secciones necesitan un fondo sólido, mantén el fondo en esas secciones específicas.
         */}
-        <main className="flex-grow bg-[#fffafa] -z-50">
-          {children}
+        <main className="flex-grow"> {/* <-- Eliminado bg-[#fffafa] */}
+          {children} {/* Aquí se renderiza el contenido de cada página (tus secciones Hero, Services, etc.) */}
         </main>
 
-        {/* 5. AGREGAMOS EL FOOTER AL FINAL */}
         <Footer />
+
       </body>
     </html>
   );

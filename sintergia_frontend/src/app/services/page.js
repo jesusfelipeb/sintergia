@@ -47,9 +47,9 @@ function ServicesPage() {
   }
 
   return (
-    <section id="services" className="py-16 bg-gradient-to-b from-indigo-50 to-white">
+    <section id="services" className="py-16 ">
       <div className="container mx-auto px-4">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 text-center">
+        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-12 pb-6 text-center text-white">
           Nuestros Servicios
         </h1>
 
@@ -80,9 +80,9 @@ function ServicesPage() {
 // =======================
 export default function Services() {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col ">
      
-      <main className="flex-grow">
+      <main className="flex-grow ">
         <ServicesPage />
       </main>
       

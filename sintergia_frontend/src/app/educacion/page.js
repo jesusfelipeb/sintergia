@@ -9,9 +9,9 @@ export default function Educacion() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <section className="py-16 bg-gradient-to-b from-indigo-50 to-white">
+    <section className="py-16 ">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-semibold text-gray-800 text-center mb-6">
+        <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-12 pb-6 text-center text-white">
           Aprendamos Juntos
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -22,7 +22,7 @@ export default function Educacion() {
 
             return (
               <div key={videoId} className="bg-indigo-50 p-4 rounded shadow-md text-center">
-                <img src={cover} alt={titulo} className="mx-auto mb-2 w-full h-48 object-cover rounded"/>
+                
                 <h3 className="text-indigo-600 font-semibold mb-2">{titulo}</h3>
                 <iframe
                   className="w-full h-48"
