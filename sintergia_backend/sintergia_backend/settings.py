@@ -1,23 +1,24 @@
 import os
-
+import dj_database_url
 from pathlib import Path
 from datetime import timedelta
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--z*jv3$l3m$_mprv9(@0njsfg08qifdi)$wqls2z7rsox$uyf5'
+# En producción, este valor debe ser tomado de variables de entorno
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure--z*jv3$l3m$_mprv9(@0njsfg08qifdi)$wqls2z7rsox$uyf5')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# En producción, Debug debe estar en False
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+# Configurar hosts permitidos para producción
+ALLOWED_HOSTS = ['*']  # Puedes restringirlo después a tu dominio específico en Render
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -25,13 +26,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',  # Agregamos la app core
-    'rest_framework',  # Si usarás DRF para APIs
+    'core',  # App core
+    'rest_framework',  # DRF para APIs
     'corsheaders',
+    'whitenoise.runserver_nostatic',  # Para servir archivos estáticos en producción
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Añadido para servir archivos estáticos
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # CORS antes de CommonMiddleware
     'django.middleware.common.CommonMiddleware',
@@ -40,7 +43,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 ROOT_URLCONF = 'sintergia_backend.urls'
 
@@ -66,21 +68,30 @@ WSGI_APPLICATION = 'sintergia_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sintergia_db',         # Nombre de la base de datos
-        'USER': 'sintergia',       # Nombre del usuario
-        'PASSWORD': '200288',  # Contraseña del usuario
-        'HOST': 'localhost',            # Host de la base de datos
-        'PORT': '5432',                 # Puerto de PostgreSQL (por defecto es 5432)
+# Configuración condicional de la base de datos
+if 'DATABASE_URL' in os.environ:
+    # Configuración para producción con Render
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    # Configuración para desarrollo local
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'sintergia_db',
+            'USER': 'sintergia',
+            'PASSWORD': '200288',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -98,33 +109,37 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Configuración de Whitenoise para archivos estáticos
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_ALLOW_ALL_ORIGINS = True
+
+# Comprimir archivos estáticos para mejor rendimiento
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Permitir solicitudes desde el frontend (ajusta la URL si es necesario)
+# Configuración CORS para permitir solicitudes desde el frontend en Vercel
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Next.js corre en este puerto por defecto
+    "http://localhost:3000",  # Desarrollo local
+    "https://tu-aplicacion.vercel.app",  # Reemplaza con tu dominio en Vercel
 ]
 
-#Configuracion JWS
+# Permitir credenciales en solicitudes CORS (si es necesario)
+CORS_ALLOW_CREDENTIALS = True
+
+# Configuración JWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -139,6 +154,18 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# Definimos la URL y la ruta de los archivos de medios (imágenes, documentos, etc.)
-MEDIA_URL = '/media/'  # URL para acceder a los archivos de medios
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Ruta en el servidor donde se almacenarán
+# Configuración de archivos de medios
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Configuración de seguridad para producción
+if not DEBUG:
+    # HTTPS settings
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    
+    # HSTS settings
+    SECURE_HSTS_SECONDS = 31536000  # 1 año
+    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
