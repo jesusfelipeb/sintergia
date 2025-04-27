@@ -133,7 +133,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Configuración CORS para permitir solicitudes desde el frontend en Vercel
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Desarrollo local
-    "https://tu-aplicacion.vercel.app",  # Reemplaza con tu dominio en Vercel
+    "https://sintergia.vercel.app/",  # Reemplaza con tu dominio en Vercel
 ]
 
 # Permitir credenciales en solicitudes CORS (si es necesario)
