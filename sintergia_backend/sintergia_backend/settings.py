@@ -12,10 +12,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure--z*jv3$l3m$_mprv9(@0n
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # En producción, Debug debe estar en False
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+# Corregido: Usar .lower() == 'true' para comparar el string 'True'/'False' sin importar mayúsculas.
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 # Configurar hosts permitidos para producción
-ALLOWED_HOSTS = ['*']  # Puedes restringirlo después a tu dominio específico en Render
+# Nota: Esta lista contiene hostnames (sin http/https).
+# Hardcodear el hostname de producción aquí funciona, pero ten en cuenta que NO permitirá el desarrollo local (localhost, 127.0.0.1)
+# a menos que DEBUG = True y tu lógica de ALLOWED_HOSTS lo maneje, o añadas esos hosts aquí manualmente para desarrollo.
+ALLOWED_HOSTS = ['sintergia.onrender.com']
 
 
 # Application definition
@@ -29,16 +33,17 @@ INSTALLED_APPS = [
     'core',  # App core
     'rest_framework',  # DRF para APIs
     'corsheaders',
-    'whitenoise.runserver_nostatic',  # Para servir archivos estáticos en producción
+    'whitenoise.runserver_nostatic',  # Para servir archivos estáticos en desarrollo con runserver
+    'whitenoise', # Añadido: Necesario para que Whitenoise funcione correctamente
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Añadido para servir archivos estáticos
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Añadido: Middleware de Whitenoise para servir archivos estáticos en producción
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # CORS antes de CommonMiddleware
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -56,7 +61,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.messages',
             ],
         },
     },
@@ -120,9 +125,8 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Configuración de Whitenoise para archivos estáticos
-WHITENOISE_USE_FINDERS = True
-WHITENOISE_MANIFEST_STRICT = False
-WHITENOISE_ALLOW_ALL_ORIGINS = True
+# Eliminadas: WHITENOISE_USE_FINDERS, WHITENOISE_MANIFEST_STRICT, WHITENOISE_ALLOW_ALL_ORIGINS
+# Estas configuraciones son para versiones antiguas de Whitenoise (3.x) y ya no se usan en versiones recientes.
 
 # Comprimir archivos estáticos para mejor rendimiento
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -131,9 +135,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Configuración CORS para permitir solicitudes desde el frontend en Vercel
+# Asegúrate de que las URLs en esta lista NO tengan barras '/' al final ni paths.
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Desarrollo local
-    "https://sintergia.vercel.app",  # Reemplaza con tu dominio en Vercel
+    "https://sintergia.vercel.app",  # Reemplaza con tu dominio en Vercel (sin / al final)
 ]
 
 # Permitir credenciales en solicitudes CORS (si es necesario)
@@ -158,14 +163,23 @@ SIMPLE_JWT = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Nota sobre MEDIA_ROOT en producción: Los archivos subidos aquí no persistirán en Render.
+# Necesitarías almacenamiento en la nube (S3, etc.) para persistencia en producción.
+
+
 # Configuración de seguridad para producción
 if not DEBUG:
     # HTTPS settings
+    SECURE_SSL_REDIRECT = True # Asegúrate de que tu proveedor de hosting maneje HTTPS
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True
-    
+
     # HSTS settings
     SECURE_HSTS_SECONDS = 31536000  # 1 año
     SECURE_HSTS_PRELOAD = True
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+    # Opcional: Configurar un email para recibir notificaciones de errores 500 en producción
+    # ADMINS = [('Your Name', 'your_email@example.com')]
+    # SERVER_EMAIL = 'your_server_email@example.com'
+    # Esto requiere configuración adicional de email backend.
