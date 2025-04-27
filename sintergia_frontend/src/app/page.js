@@ -29,10 +29,17 @@ export default function Home() {
       try {
         setLoadingMessage(true);
         setErrorLoadingMessage(null); // Resetear error en cada intento
-        // **IMPORTANTE:** La URL del backend debe ser accesible desde donde corres la app Next.js
-        // En desarrollo local, 'http://127.0.0.1:8000' suele funcionar si Django corre ahí.
-        // En producción, necesitarás la URL pública de tu API Django.
-        const response = await fetch('http://127.0.0.1:8000/api/home/');
+        // ** --- MODIFICACIÓN CLAVE PARA VARIABLES DE ENTORNO --- **
+        // En lugar de usar la URL local hardcodeada, leemos la URL base del backend
+        // desde la variable de entorno 'NEXT_PUBLIC_BACKEND_URL'.
+        // Si esta variable NO está definida (por ejemplo, en tu entorno de desarrollo local
+        // sin un archivo .env.local configurado para esta variable), usamos 'http://127.0.0.1:8000'
+        // como una URL de fallback para que siga funcionando localmente.
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8000';
+
+        // Construimos la URL completa del endpoint de la API concatenando la URL base del backend
+        // (leída de la variable de entorno o el fallback) con la ruta específica de la API.
+        const response = await fetch(`${backendUrl}/api/home/`);
         if (!response.ok) {
           // Si la respuesta no es 2xx, lanzar un error
           const errorText = response.statusText || 'Error desconocido del servidor';
