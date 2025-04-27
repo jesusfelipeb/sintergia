@@ -1,15 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import AnimeBackground from './componentes/AnimeBackground';
+import Image from 'next/image';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Pagination, Autoplay } from 'swiper/modules';
+import { ArrowRight, Code, Bot, Globe, CheckCircle } from 'lucide-react';
 import { useFetchProyectos } from './hooks/useFetchProyectos';
 import { useFetchYoutubeVideos } from './hooks/useFetchYoutubeVideos';
 import ContactForm from "./componentes/ContactForm";
-import Lottie from 'lottie-react';
-import webAnimation from '../../public/dev.json';
-import financeAnimation from '../../public/finance.json';
-import techAnimation from '../../public/ia.json';
+
 
 
 
@@ -20,46 +22,124 @@ import techAnimation from '../../public/ia.json';
 
 // 🚀 Mejora: Hero más atractivo y con mejor responsividad
 function Hero() {
+  // Estado para controlar la aparición de elementos cuando están en viewport
+  const [isVisible, setIsVisible] = useState(false);
+  
+  // Efecto para activar la animación después de que la página cargue
+  useEffect(() => {
+    setIsVisible(true);
+    
+    // Opcional: Seguimiento de conversión para el CTA
+    const ctaButton = document.getElementById('hero-cta');
+    if (ctaButton) {
+      ctaButton.addEventListener('click', () => {
+        // Aquí podrías implementar Analytics (ejemplo: GA4)
+        console.log('CTA clicked');
+      });
+    }
+  }, []);
+
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Video de fondo */}
-      <div className="absolute bg-black inset-0 z-0 w-full h-full">
-        <AnimeBackground />
-             
+    <section id="hero" className="relative min-h-[100svh] flex items-center justify-center overflow-hidden py-8 md:py-16">
+      {/* Preloader para imagen de fondo con prioridad alta */}
+      <div className="absolute inset-0 -z-10">
+        {/* Overlay mejorado con gradiente para mejor legibilidad en todos los dispositivos */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80 z-10"></div>
+        
+        {/* Imagen optimizada para mobile-first */}
+        <picture>
+          {/* Versión mobile - más ligera */}
+          <source 
+            media="(max-width: 640px)" 
+            srcSet="/fondohero-mobile.jpg" 
+          />
+          {/* Versión desktop */}
+          <Image
+            src="/fondohero.jpg"
+            alt="Soluciones digitales innovadoras para tu negocio - Sintergia Studio"
+            width={1920}
+            height={1080}
+            className="object-cover w-full h-full"
+            priority
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIfIiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9Pjv/..."
+            sizes="100vw"
+          />
+        </picture>
       </div>
 
-      {/* Contenido centrado */}
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col items-center text-center">
-          {/* Título principal con animaciones */}
-          <h1 className='text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight animate-fade-in-up bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent mx-2 animate-gradient-x'>Sintergia Studio</h1>
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-semibold mb-6 leading-tight animate-fade-in-up">
-            <span className="block text-[#f8fafc] mb-4 md:mb-6">
-              Soluciones            
-              Digitales              
-            </span>
-            
-            <div className="space-y-2">
-              <span className="block text-lg md:text-xl lg:text-2xl text-cyan-100 font-medium tracking-wide">
-                Desarrollo Web & Inteligencia Artificial
-              </span>
-              <div className="h-1 w-24 bg-indigo-400 mx-auto animate-line-expand" />
-            </div>
-          </h2>
+      {/* Contenido principal */}
+      <div className="container mx-auto px-4 relative z-10 w-full">
+        <div className={`flex flex-col items-center text-center transition-opacity duration-1000 ease-out ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+          {/* Logo pequeño (opcional) */}
+          <div className="w-16 h-16 mb-4 md:mb-6">
+            <Image 
+              src="/logo.png" 
+              alt="Sintergia Logo" 
+              width={64} 
+              height={64}
+              className="animate-pulse-slow"
+            />
+          </div>
 
-          {/* Texto descriptivo */}
-          <p className="text-lg md:text-xl lg:text-2xl text-indigo-50 max-w-2xl mb-8 md:mb-12 px-4 animate-slide-up delay-100">
-            Transformamos ideas innovadoras en realidades estratégicas con tecnología de vanguardia
+          {/* Título principal con tamaño ajustado para mobile */}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-4 md:mb-6 
+                         leading-normal pt-4 pb-1 bg-gradient-to-r from-yellow-200 to-orange-500 
+                         bg-clip-text text-transparent">
+            Sintergia Studio
+          </h1>
+
+          {/* Subtítulo */}
+          <p className="text-xl sm:text-2xl md:text-3xl font-semibold text-white mb-2 md:mb-3">
+            Soluciones Digitales
           </p>
 
-          {/* Botón CTA con animación */}
-          <Link
-            href="#contact"
-            className="bg-gradient-to-r from-indigo-500 to-cyan-500 text-white px-10 py-5 rounded-xl text-lg md:text-xl font-semibold shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 animate-pulse-slow"
-          >
-            ¡Impulsa tu proyecto!
-          </Link>
+          {/* Especialidad */}
+          <p className="text-base sm:text-lg md:text-xl text-cyan-100 font-medium tracking-wide mb-3 md:mb-4">
+            Desarrollo Web & Inteligencia Artificial
+          </p>
+
+          {/* Línea decorativa con animación mejorada */}
+          <div className="h-1 w-16 sm:w-24 bg-indigo-400 mx-auto mt-2 mb-6 transition-all duration-700 ease-out" 
+               style={{ width: isVisible ? '6rem' : '0' }}
+          />
+
+          {/* Texto descriptivo optimizado y más persuasivo */}
+          <p className="text-base sm:text-lg md:text-xl text-indigo-50 max-w-xl md:max-w-2xl mb-8 md:mb-10 px-4">
+            Transformamos ideas innovadoras en <span className="font-semibold">soluciones rentables</span> con tecnología de vanguardia adaptada a tus necesidades
+          </p>
+
+          {/* Contenedor de CTA con badge de "Consulta Gratis" */}
+          <div className="relative">
+            {/* Badge de oferta */}
+            <div className="absolute -top-6 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full transform rotate-12 animate-bounce-slow">
+              Consulta Inicial Gratis
+            </div>
+            
+            {/* Botón CTA con mejor contraste y llamada a la acción clara */}
+            <Link
+              href="#contact"
+              id="hero-cta"
+              className="inline-block bg-gradient-to-r from-indigo-600 to-cyan-600 text-white px-6 sm:px-8 md:px-10 py-4 rounded-lg text-base sm:text-lg md:text-xl font-bold shadow-lg hover:shadow-xl hover:from-indigo-500 hover:to-cyan-500 transition-all duration-300 hover:scale-105 transform"
+              aria-label="Solicitar consulta para tu proyecto digital"
+            >
+              ¡Impulsa tu proyecto ahora!
+            </Link>
+          </div>
+
+          {/* Social proof / Testimonios breves (opcional) */}
+          <div className="mt-8 text-sm text-gray-300 flex items-center gap-2">
+            <span>⭐⭐⭐⭐⭐</span>
+            <span>Más de 50 proyectos exitosos</span>
+          </div>
         </div>
+      </div>
+
+      {/* Indicador de scroll */}
+      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:block">
+        <svg className="w-6 h-6 text-white opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
       </div>
     </section>
   );
@@ -67,71 +147,273 @@ function Hero() {
 
 // 🚀 Mejora: Sección de Servicios
 function Services() {
+  // Estado para controlar el índice del slide activo (para los indicadores)
+  const [activeIndex, setActiveIndex] = useState(0);
+  // Ref para acceder a la instancia de Swiper y controlar el cambio de slide desde los indicadores
+  const swiperRef = useRef(null);
+
+  // Datos de servicios: un array de objetos para definir cada servicio dinámicamente
+  const services = [
+    {
+      id: 1,
+      title: "Desarrollo Web",
+      icon: <Code size={32} className="text-orange-500" />,
+      description: "Creamos sitios web y aplicaciones a medida que convierten visitantes en clientes.",
+      benefits: [
+        "Diseño responsive optimizado para móviles",
+        "Optimización SEO para mayor visibilidad",
+        "Experiencia de usuario intuitiva",
+        "Alto rendimiento y tiempos de carga rápidos"
+      ],
+      cta: "Cotizar Desarrollo Web", // CTA más específico
+      color: "text-orange-600", // Color principal para el título del slide
+      bgColor: "from-orange-500/20 to-transparent", // Degradado de fondo para el slide
+      linkHref: "@/services" // Ruta específica de la página de detalles
+    },
+    {
+      id: 2,
+      title: "Agentes de IA",
+      icon: <Bot size={32} className="text-indigo-500" />,
+      description: "Asistentes inteligentes que automatizan procesos y mejoran la atención al cliente.",
+      benefits: [
+        "Atención 24/7 con respuestas personalizadas",
+        "Integración con tus sistemas existentes",
+        "Aprendizaje continuo y mejora automática",
+        "Incremento en satisfacción del cliente"
+      ],
+      cta: "Cotizar Agente IA", // CTA más específico
+      color: "text-indigo-600",
+      bgColor: "from-indigo-500/20 to-transparent",
+      comingSoon: true, // Bandera para indicar que está próximo
+      linkHref: "@/services" // Ruta específica (incluso si está próximo)
+    },
+    {
+      id: 3,
+      title: "Soluciones Digitales",
+      icon: <Globe size={32} className="text-cyan-500" />,
+      description: "Estrategias digitales completas adaptadas a los objetivos de tu negocio.",
+      benefits: [
+        "Análisis de necesidades y objetivos",
+        "Implementación de tecnologías a medida",
+        "Soporte técnico y mantenimiento continuo",
+        "Escalabilidad según el crecimiento de tu negocio"
+      ],
+      cta: "Cotizar Solución Digital", // CTA más específico
+      color: "text-cyan-600",
+      bgColor: "from-cyan-500/20 to-transparent",
+      linkHref: "@/services" // Ruta específica
+    }
+  ];
+
+  // URL base para el enlace de WhatsApp con mensaje prellenado
+  // Reemplaza 'CODIGOPAISNUMEROWHATSAPP' con tu número real
+  const whatsappBaseUrl = "https://wa.me/541132924310?text=Hola%2C%20quiero%20cotizar%20el%20servicio%20de%20";
+
+
   return (
-    <section id="services" className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-semibold text-gray-800 text-center mb-6">
-          Nuestros Servicios
-        </h2>
-        <p className="text-xl text-gray-600 text-center mb-12 max-w-2xl mx-auto">
-          Ofrecemos soluciones personalizadas para ayudarte a lograr tus objetivos en el mundo digital.
-        </p>
+    // Sección principal con ID para navegación, padding vertical, altura mínima y flexbox para centrado (si aplica)
+    <section id="services" className="relative py-16 md:py-20 min-h-screen flex items-center">
+      {/* Fondo con overlay y imagen */}
+      <div className="absolute inset-0 -z-10">
+        {/* Overlay con gradiente semi-transparente */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60 z-10"></div>
+        {/* Imagen de fondo con optimización de Next.js */}
+        <Image
+          src="/fondo3.jpg" // Asegúrate que la ruta sea correcta en /public
+          alt="Fondo de servicios de Sintergia Studio"
+          width={1920} // Dimensiones intrínsecas de la imagen
+          height={1080}
+          className="object-cover w-full h-full" // Asegura que la imagen cubra el área
+          priority // Prioridad de carga
+        />
+      </div>
 
-        {/* Grid de servicios */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          
-          {/* Desarrollo Web */}
-          <Link href="/services" className="bg-white p-8 rounded-lg shadow-md text-center cursor-pointer hover:shadow-lg transition-shadow">
-            <h3 className="text-2xl font-semibold text-indigo-600 mb-4">Desarrollo Web</h3>
-            <div className="mb-4 mx-auto" style={{ width: '200px', height: '250px' }}>
-              <Lottie
-                animationData={webAnimation}
-                loop={true}
-                autoplay={true}
-              />
-            </div>
-            <p className="text-gray-600">
-              Creamos páginas web innovadoras, eficientes y adaptadas a las necesidades de tu negocio.
+      {/* Contenedor principal del contenido con centrado y padding */}
+      <div className="container mx-auto px-4 relative z-20">
+        {/* Encabezado de la sección (Título y párrafo introductorio) */}
+        <div className="text-center mb-12">
+          {/* Título principal de la sección */}
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
+            Nuestros Servicios
+          </h2>
+          {/* Párrafo descriptivo */}
+          <p className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto">
+            Soluciones tecnológicas avanzadas diseñadas para impulsar tu negocio en el mundo digital
+          </p>
+        </div>
+
+        {/* Área del carrusel de servicios */}
+        <div className="max-w-4xl mx-auto">
+          {/* Indicadores personalizados (botones que controlan el slide activo) */}
+          <div className="flex justify-center space-x-3 mb-8">
+            {services.map((service, index) => (
+              // Botón indicador
+              <button
+                key={`indicator-${service.id}`} // Key único
+                // Clases dinámicas para resaltar el indicador activo
+                className={`flex items-center transition-all duration-300 px-4 py-2 rounded-full cursor-pointer ${
+                  activeIndex === index
+                    ? `bg-white/20 border border-white/30 shadow-lg`
+                    : `bg-white/5 hover:bg-white/10`
+                }`}
+                // Al hacer clic, desliza el carrusel al slide correspondiente
+                onClick={() => {
+                  swiperRef.current.swiper.slideTo(index);
+                }}
+                aria-label={`Ver servicio ${service.title}`} // Atributo de accesibilidad
+              >
+                {/* Icono del servicio (siempre visible, opacidad ajustada) */}
+                <span className={`${activeIndex === index ? 'opacity-100' : 'opacity-70'} text-white`}>
+                  {service.icon}
+                </span>
+                {/* Título del servicio (visible solo en el indicador activo) */}
+                <span className={`ml-2 ${activeIndex === index ? 'opacity-100 w-auto' : 'opacity-0 w-0'} overflow-hidden transition-all text-white whitespace-nowrap`}> {/* w-auto vs w-0 para transición de ancho */}
+                  {service.title}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Contenedor del Carrusel (Swiper) */}
+          {/* Altura fija para permitir el scroll vertical */}
+          <div className="h-[500px] sm:h-[450px] w-full"> {/* Ajusta la altura según necesites */}
+            <Swiper
+              ref={swiperRef} // Asigna la ref para control externo
+              spaceBetween={30} // Espacio entre slides
+              slidesPerView={1} // Muestra 1 slide a la vez
+              modules={[Pagination, Autoplay]} // Módulos usados
+              effect="slide" // Efecto de transición (puedes probar "fade" si importas EffectFade)
+              className="h-full w-full" // Asegura que Swiper ocupe el contenedor
+              loop={true} // Habilita el bucle infinito
+              autoplay={{ // Configuración de autoplay
+                delay: 6000, // Tiempo entre slides
+                disableOnInteraction: false, // No se detiene si el usuario interactúa
+                pauseOnMouseEnter: true, // Pausa al pasar el ratón
+              }}
+              // Actualiza el estado del índice activo al cambiar de slide
+              onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+            >
+              {/* Mapea el array de servicios para crear un SwiperSlide por cada uno */}
+              {services.map((service) => (
+                <SwiperSlide key={service.id}>
+                  {/* Contenido de cada slide del servicio */}
+                  {/* Fondo con gradiente, blur y borde transparente */}
+                  <div className={`h-full w-full rounded-xl p-8 bg-gradient-to-br ${service.bgColor} backdrop-blur-sm border border-white/10 flex flex-col`}>
+                    {/* Encabezado del slide (Icono y Título) */}
+                    <div className="flex items-center mb-6">
+                      {/* Contenedor del icono */}
+                      <div className="p-3 rounded-lg bg-white/10 mr-5">
+                        {service.icon} {/* Icono del servicio */}
+                      </div>
+                      <div>
+                        {/* Título del servicio en el slide */}
+                        <h3 className={`text-4xl sm:text-5xl font-bold ${service.color}`}>
+                          {service.title}
+                        </h3>
+                        {/* Indicador "Próximamente" si aplica */}
+                        {service.comingSoon && (
+                          <span className="mt-1 inline-block text-xs bg-indigo-600 text-white px-2 py-1 rounded-full">
+                            Próximamente
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Descripción del servicio */}
+                    <p className="text-white text-xl mb-8">
+                      {service.description}
+                    </p>
+
+                    {/* Sección de Beneficios */}
+                    <div className="mb-8 flex-grow"> {/* flex-grow para ocupar espacio disponible y empujar el CTA hacia abajo */}
+                      {/* Título de Beneficios */}
+                      <h4 className="text-white text-xl mb-4 font-medium">Lo que ofrecemos:</h4>
+                      {/* Grid para mostrar los beneficios */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {service.benefits.map((benefit, index) => (
+                          // Item de Beneficio
+                          <div key={index} className="flex items-start text-gray-200">
+                            {/* Icono de Check */}
+                            <CheckCircle size={20} className="mr-2 mt-1 flex-shrink-0 text-green-400" />
+                            {/* Texto del beneficio */}
+                            <span>{benefit}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Área de Botones (Ver detalles y CTA) */}
+                    <div className="flex flex-col sm:flex-row gap-4 mt-auto "> {/* mt-auto empuja al final */}
+                      {/* Botón "Ver detalles" (Link a la página de servicios) */}
+                      {/* Añadido cursor-pointer explícitamente aunque debería tenerlo por defecto */}
+                      <Link
+                        href={service.comingSoon ? "/services" : service.linkHref} // Redirige a /services o la ruta específica
+                        className={`flex-1 inline-flex cursor-pointer items-center justify-center px-6 py-4 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-all group`}
+                        // Si es "Próximamente", deshabilita la interacción visualmente
+                        aria-disabled={service.comingSoon} // Atributo de accesibilidad para deshabilitar
+                        tabIndex={service.comingSoon ? -1 : 0} // Evita que sea enfocable si está deshabilitado
+                        
+                      >
+                        <span>{service.comingSoon ? "Próximamente" : "Ver detalles"}</span> {/* Cambia el texto si es Próximamente */}
+                         {/* Opcional: Icono de flecha para indicar acción */}
+                         {/* <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" /> */}
+                      </Link>
+                      {/* Botón CTA de WhatsApp */}
+                      {/* Se mantiene como enlace a WhatsApp */}
+                      <a
+                        href={`${whatsappBaseUrl}${encodeURIComponent(service.title)}`} // Enlace a WhatsApp con título del servicio
+                        target="_blank" // Abre en nueva pestaña
+                        rel="noopener noreferrer" // Seguridad al abrir en nueva pestaña
+                        className={`flex-1 inline-flex items-center justify-center px-6 py-4 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-800 hover:from-indigo-700 hover:to-indigo-900 text-white font-bold transition-all cursor-pointer`} // cursor-pointer explícito
+                      >
+                        <span>{service.cta}</span> {/* Texto del CTA */}
+                        {/* Icono de flecha para indicar acción */}
+                        <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                      </a>
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+
+          {/* Contador de servicios */}
+          <div className="mt-8 text-center">
+            <p className="text-white/70">
+              <span className="text-xl font-medium text-white">{activeIndex + 1}</span>
+              <span className="mx-2">/</span>
+              <span>{services.length}</span>
             </p>
-          </Link>
+          </div>
+        </div>
 
-          {/* Educación Tecnológica */}
-          <Link href="/services" className="bg-white p-8 rounded-lg shadow-md text-center">
-            <h3 className="text-2xl font-semibold text-indigo-600 mb-4">Tecnología</h3>
-            <div className="mb-4 mx-auto" style={{ width: '200px', height: '250px' }}>
-              <Lottie
-                animationData={techAnimation}
-                loop={true}
-                autoplay={true}
-              />
-            </div>
-            <p className="text-gray-600">
-              Te impulsamos con tecnología, blockchain e inteligencia artificial para que estés siempre a la vanguardia.
-            </p>
-          </Link>
-
-
-          {/* Educación Financiera */}
-          <Link href="/services" className="bg-white p-8 rounded-lg shadow-md text-center">
-            <h3 className="text-2xl font-semibold text-indigo-600 mb-4">Finanzas</h3>
-            <div className="mb-4 mx-auto" style={{ width: '200px', height: '250px' }}>
-              <Lottie
-                animationData={financeAnimation}
-                loop={true}
-                autoplay={true}
-              />
-            </div>
-            <p className="text-gray-600">
-              Te educamos en el mundo de las inversiones y la gestión financiera para maximizar tu rendimiento.
-            </p>
-          </Link>
-
-          
+        {/* Sección de tecnologías */}
+        <div className="mt-0 text-center">
+          <h3 className="text-2xl text-white mb-6 font-medium">Tecnologías con las que trabajamos</h3>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+            {[
+              {name: 'NextJS', logo: '/tech/nextjs.svg'}, // Considera usar el campo logo
+              {name: 'React', logo: '/tech/react.svg'},
+              {name: 'Node.js', logo: '/tech/nodejs.svg'},
+              {name: 'Python', logo: '/tech/python.svg'},
+              {name: 'TailwindCSS', logo: '/tech/tailwind.svg'},
+              // Añade más tecnologías aquí
+            ].map((tech) => (
+              // Item de tecnología
+              <div key={tech.name} className="px-5 py-3 bg-white/10 hover:bg-white/15 rounded-lg text-white flex items-center">
+                {/* Aquí puedes renderizar la imagen del logo si la agregas al objeto tech */}
+                {/* <Image src={tech.logo} alt={`${tech.name} Logo`} width={24} height={24} className="mr-2" /> */}
+                {tech.name} {/* Muestra el nombre de la tecnología */}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
+
 
 // 🚀 Sección de Portafolio
 
@@ -205,7 +487,7 @@ function Educacion() {
 
               return (
                 <div key={videoId} className="bg-indigo-50 p-4 rounded shadow-md text-center">
-                  <img src={cover} alt={titulo} className="mx-auto mb-2 w-full h-48 object-cover rounded"/>
+                  
                   <h3 className="text-indigo-600 font-semibold mb-2">{titulo}</h3>
                   {/* iframe para reproducir video */}
                   <iframe

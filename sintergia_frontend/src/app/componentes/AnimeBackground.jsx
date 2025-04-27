@@ -43,7 +43,7 @@ const AnimeBackground = () => {
     <div
       id="anime-background"
       ref={containerRef}
-      className="fixed inset-0 -z-10"
+      className="fixed inset-0 "
       style={{
         overflow: 'hidden',
         position: 'absolute',

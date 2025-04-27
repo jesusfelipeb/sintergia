@@ -47,9 +47,11 @@ function Portfolio() {
           {proyectos.map((proyecto) => (
             <div key={proyecto.id} className="bg-indigo-50 p-8 rounded-lg shadow-md text-center">
               {proyecto.imagen && (
-                <img
+                <Image
                   src={proyecto.imagen}
                   alt={proyecto.titulo}
+                  with="1920"
+                  heigt="1080"
                   className="w-full h-48 object-cover mb-4 rounded"
                 />
               )}

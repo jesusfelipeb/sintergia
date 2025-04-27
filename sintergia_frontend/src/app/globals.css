@@ -17,8 +17,34 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-mulish), sans-serif;
+  /* Opcional: Puedes establecer un peso por defecto si no usas clases de peso de Tailwind en el body */
+  font-weight: 400;
 }
+
+h1 {
+  /* Aplica Ruwudu para todos los h1 */
+  font-family: var(--font-ruwudu), serif;
+  /* El peso (700) se maneja por la configuración de next/font */
+}
+
+h2 {
+  /* Aplica Signika para todos los h2 */
+  font-family: var(--font-signika), sans-serif;
+   /* El peso (600) se maneja por la configuración de next/font */
+}
+
+h3 {
+  /* Aplica Mulish para todos los h3 */
+  font-family: var(--font-mulish), sans-serif;
+  /*
+    Establece el peso para h3.
+    Aunque next/font carga el peso 600, debes aplicarlo explícitamente aquí o con clases de Tailwind.
+  */
+  font-weight: 600;
+}
+
+
 
 
 @keyframes fade-in-up {
