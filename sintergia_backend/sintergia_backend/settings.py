@@ -163,7 +163,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # --- Configuración de CORS ---
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Desarrollo local
-    "sintergia.vercel.app",
+    "https://sintergia.vercel.app",
     f"https://{os.getenv('NEXT_PUBLIC_FRONTEND_DOMAIN')}",  # <-- Tu dominio en Vercel
 ]
 
