@@ -1,6 +1,6 @@
 import os
 import dj_database_url  # Importamos la librería para configurar la base de datos desde una URL
-
+import environ
 from pathlib import Path
 from datetime import timedelta
 
@@ -9,14 +9,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Configuración de Seguridad y Producción ---
 
+env = environ.Env()
 
+# Leer el archivo .env adecuado
+if os.getenv('DJANGO_ENV') == 'production':
+    # Cargar variables de producción
+    environ.Env.read_env(os.path.join(BASE_DIR, '.env.production'))
+else:
+    # Cargar variables de desarrollo
+    environ.Env.read_env(os.path.join(BASE_DIR, '.env.local'))
 
 # Este valor de respaldo solo se usará si la variable de entorno 'SECRET_KEY' NO está definida (ej: en desarrollo local si no usas un .env).
 SECRET_KEY = os.environ.get('SECRET_KEY','4pg&ocfm8lf(2(03m8wf6=-91h38z0ke-qwha4mf!') # <-- Reemplaza por tu segunda clave segura generada
 
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'https://sintergia.onrender.com',
+    'sintergia.vercel.app',
+]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
@@ -226,8 +237,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' # Tipo de campo por defecto
 # **CORRECCIÓN:** Ya habías corregido para que las URLs en esta lista NO tengan barras '/' al final ni paths.
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Desarrollo local
-    "https://sintergia.vercel.app",
-    f"https://{NEXT_PUBLIC_FRONTEND_DOMAIN}",    
+    "sintergia.vercel.app",
+    f"https://{NEXT_PUBLIC_FRONTEND_DOMAIN}",    # <-- Tu dominio en Vercel (asegúrate que no tenga / al final)
+    # Si usas un dominio personalizado con Vercel, añádelo aquí también (ej: "https://tudominio.com")
 ]
 
 # Permitir credenciales en solicitudes CORS (si es necesario)
