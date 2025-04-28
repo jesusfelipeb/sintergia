@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # El segundo argumento de os.environ.get() es un valor por defecto.
 # **CORRECCIÓN:** Reemplazamos la clave insegura original por una SEGUNDA clave segura generada para el fallback.
 # Este valor de respaldo solo se usará si la variable de entorno 'SECRET_KEY' NO está definida (ej: en desarrollo local si no usas un .env).
-SECRET_KEY = os.environ.get('dr*(hev_j@ttj9wh**=afre*akwk)xi!1n@d=0lbv14**0e37&') # <-- Reemplaza por tu segunda clave segura generada
+SECRET_KEY = os.environ.get('8293f27ba0ff5d66d50a7d3c53df0383') # <-- Reemplaza por tu segunda clave segura generada
 # **¡IMPORTANTE!** En producción en Render, DEBES configurar la variable de entorno 'SECRET_KEY'
 # para que tenga una clave segura y única (DIFERENTE a la que pusiste aquí como respaldo).
 
