@@ -37,6 +37,8 @@ export default function Home() {
         // como una URL de fallback para que siga funcionando localmente.
         const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8000';
 
+        console.log('Backend URL:', backendUrl);
+
         // Construimos la URL completa del endpoint de la API concatenando la URL base del backend
         // (leída de la variable de entorno o el fallback) con la ruta específica de la API.
         const response = await fetch(`${backendUrl}/api/home/`);
@@ -58,7 +60,7 @@ export default function Home() {
     };
 
     fetchData();
-  }, []); // El array vacío asegura que este efecto solo se ejecute una vez al montar el componente
+  }, []);// El array vacío asegura que este efecto solo se ejecute una vez al montar el componente
 
 
   return (
@@ -84,7 +86,7 @@ export default function Home() {
 
     </> // Cerramos el Fragment
 
-    /*
+    /* 
     // Si prefieres un div wrapper, asegúrate de que no interfiera con el layout de body en layout.js
     <div className="min-h-screen flex flex-col">
        <Hero />
