@@ -9,45 +9,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --- Configuración de Seguridad y Producción ---
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# Leemos la SECRET_KEY de una variable de entorno llamada 'SECRET_KEY'.
-# Esto es fundamental por seguridad en producción. NUNCA dejes una SECRET_KEY real hardcodeada aquí.
-# Render proporcionará esta variable de entorno SECRET_KEY.
-# El segundo argumento de os.environ.get() es un valor por defecto.
-# **CORRECCIÓN:** Reemplazamos la clave insegura original por una SEGUNDA clave segura generada para el fallback.
+
+
 # Este valor de respaldo solo se usará si la variable de entorno 'SECRET_KEY' NO está definida (ej: en desarrollo local si no usas un .env).
 SECRET_KEY = os.environ.get('SECRET_KEY','4pg&ocfm8lf(2(03m8wf6=-91h38z0ke-qwha4mf!') # <-- Reemplaza por tu segunda clave segura generada
-# **¡IMPORTANTE!** En producción en Render, DEBES configurar la variable de entorno 'SECRET_KEY'
-# para que tenga una clave segura y única (DIFERENTE a la que pusiste aquí como respaldo).
 
-
-# SECURITY WARNING: don't run with debug turned on in production!
-# Leemos el valor de DEBUG de una variable de entorno llamada 'DEBUG'.
-# En producción, DEBES configurar esta variable a 'False' en Render.
-# Convertimos el valor de la variable a minúsculas antes de comparar para manejar 'True'/'False' de forma robusta.
-# CORRECCIÓN: Ya usabas .lower() == 'true', lo cual es correcto.
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
-# Cuando DEBUG es True, Django muestra errores detallados (útil en desarrollo).
-# Cuando DEBUG es False (en producción), Django NO muestra errores detallados y requiere configuración adicional para logging de errores.
 
-
-# ALLOWED_HOSTS define los nombres de dominio donde tu Django app puede ser accedida.
-# En producción, DEBE incluir el hostname proporcionado por Render.
-# Render establece automáticamente una variable de entorno llamada RENDER_EXTERNAL_HOSTNAME.
-# **CORRECCIÓN:** Usamos la lógica dinámica en lugar de hardcodear un solo hostname.
 ALLOWED_HOSTS = []
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-NEXT_PUBLIC_FRONTEND_DOMAIN = os.environ.get('NEXT_PUBLIC_FRONTEND_DOMAIN')
-if NEXT_PUBLIC_FRONTEND_DOMAIN:
-    ALLOWED_HOSTS.append(NEXT_PUBLIC_FRONTEND_DOMAIN)
-
 if DEBUG:
     ALLOWED_HOSTS.append('localhost')
     ALLOWED_HOSTS.append('127.0.0.1')
+
 
     # Puedes añadir otros hosts de desarrollo local si los usas aquí.
 
@@ -249,8 +227,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' # Tipo de campo por defecto
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Desarrollo local
     "https://sintergia.vercel.app",
-    f"https://{NEXT_PUBLIC_FRONTEND_DOMAIN}",    # <-- Tu dominio en Vercel (asegúrate que no tenga / al final)
-    # Si usas un dominio personalizado con Vercel, añádelo aquí también (ej: "https://tudominio.com")
+    f"https://{NEXT_PUBLIC_FRONTEND_DOMAIN}",    
 ]
 
 # Permitir credenciales en solicitudes CORS (si es necesario)
