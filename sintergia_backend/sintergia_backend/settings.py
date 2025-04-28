@@ -35,18 +35,20 @@ DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 # En producción, DEBE incluir el hostname proporcionado por Render.
 # Render establece automáticamente una variable de entorno llamada RENDER_EXTERNAL_HOSTNAME.
 # **CORRECCIÓN:** Usamos la lógica dinámica en lugar de hardcodear un solo hostname.
-ALLOWED_HOSTS = [] # Inicializamos la lista.
+ALLOWED_HOSTS = []
 
-# Si RENDER_EXTERNAL_HOSTNAME está definida (en Render), la añadimos a los hosts permitidos.
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-# Si estamos en modo DEBUG (en desarrollo local), permitimos localhost y 127.0.0.1.
-# Esto es conveniente para el desarrollo local.
+NEXT_PUBLIC_FRONTEND_DOMAIN = os.environ.get('NEXT_PUBLIC_FRONTEND_DOMAIN')
+if NEXT_PUBLIC_FRONTEND_DOMAIN:
+    ALLOWED_HOSTS.append(NEXT_PUBLIC_FRONTEND_DOMAIN)
+
 if DEBUG:
     ALLOWED_HOSTS.append('localhost')
     ALLOWED_HOSTS.append('127.0.0.1')
+
     # Puedes añadir otros hosts de desarrollo local si los usas aquí.
 
 # Si usas un dominio personalizado con Render, también deberás añadirlo aquí manualmente
@@ -246,7 +248,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' # Tipo de campo por defecto
 # **CORRECCIÓN:** Ya habías corregido para que las URLs en esta lista NO tengan barras '/' al final ni paths.
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Desarrollo local
-    "https://sintergia.vercel.app",  # <-- Tu dominio en Vercel (asegúrate que no tenga / al final)
+    "https://sintergia.vercel.app",
+    f"https://{NEXT_PUBLIC_FRONTEND_DOMAIN}",    # <-- Tu dominio en Vercel (asegúrate que no tenga / al final)
     # Si usas un dominio personalizado con Vercel, añádelo aquí también (ej: "https://tudominio.com")
 ]
 
