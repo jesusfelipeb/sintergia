@@ -106,6 +106,8 @@ DATABASES = {
 # dj_database_url a menudo lo maneja si la URL es 'postgres://...' o tiene 'sslmode=require',
 # pero esta capa adicional asegura que SSL esté activo solo cuando DEBUG es False.
 if not DEBUG and 'default' in DATABASES:
+     # CORRECCIÓN: Asegurarse de que el diccionario 'OPTIONS' exista, creándolo si es necesario.
+     DATABASES['default'].setdefault('OPTIONS', {})
      # Añadir sslmode=require a las opciones si no está ya presente
      DATABASES['default']['OPTIONS'].setdefault('sslmode', 'require')
      # Opcional: Añadir otras opciones de conexión si tu proveedor de DB las requiere
