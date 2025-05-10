@@ -42,5 +42,3 @@ next-env.d.ts
 # Ignorar entorno virtual
 /mi_entorno/
 
-# Ignorar archivo de configuración de producción
-.env.production
