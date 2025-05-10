@@ -1,0 +1,809 @@
+[
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "admin",
+    "model": "logentry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "auth",
+    "model": "permission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "auth",
+    "model": "group"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "auth",
+    "model": "user"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "contenttypes",
+    "model": "contenttype"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "sessions",
+    "model": "session"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "core",
+    "model": "servicio"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "core",
+    "model": "proyecto"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "core",
+    "model": "contacto"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "token_blacklist",
+    "model": "blacklistedtoken"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "fields": {
+    "app_label": "token_blacklist",
+    "model": "outstandingtoken"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "8oebtt07tw0tcryo1i1pj35smtiwq4ia",
+  "fields": {
+    "session_data": ".eJxVjMsKwjAQAP8lZwnNu_Hovd8QNrtbU5UUmvYk_rsEetDrzDBvkeDYSzoab2khcRVKXH5ZBnxy7YIeUO-rxLXu25JlT-Rpm5xW4tftbP8GBVrpW8PeZBUDUUBtyOs4q2yQxhGDBdY8AFOIKrrZOEIGst4N1kNErZnF5wvtrzho:1tjioU:Za-kncstRHYmVm5xQvPDeXkprAXLDqxtX8LI5meCua0",
+    "expire_date": "2025-03-02T17:52:18.964Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "9qpkupqzoe3bqueab8d9lwfkz7b6dwcj",
+  "fields": {
+    "session_data": ".eJxVjMsKwjAQAP8lZwnNu_Hovd8QNrtbU5UUmvYk_rsEetDrzDBvkeDYSzoab2khcRVKXH5ZBnxy7YIeUO-rxLXu25JlT-Rpm5xW4tftbP8GBVrpW8PeZBUDUUBtyOs4q2yQxhGDBdY8AFOIKrrZOEIGst4N1kNErZnF5wvtrzho:1tpXSU:TaCoH-JTxJoLGPjp0AYbmPp5KYvbLsW3X1Pdp3ID5oU",
+    "expire_date": "2025-03-18T18:57:38.022Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "gly0k96foqvb5ey0hkoobqbbt0f1i3jv",
+  "fields": {
+    "session_data": ".eJxVjMsKwjAQAP8lZwnNu_Hovd8QNrtbU5UUmvYk_rsEetDrzDBvkeDYSzoab2khcRVKXH5ZBnxy7YIeUO-rxLXu25JlT-Rpm5xW4tftbP8GBVrpW8PeZBUDUUBtyOs4q2yQxhGDBdY8AFOIKrrZOEIGst4N1kNErZnF5wvtrzho:1teKxp:FtzkFWrg2JdpbrpASDy4H6sFoq0YY6T_Y7OSB1Z8XpY",
+    "expire_date": "2025-02-15T21:23:41.414Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "pr5dkccw2z8c66ij3vwbhm7u1y9e42m9",
+  "fields": {
+    "session_data": ".eJxVjMsKwjAQAP8lZwnNu_Hovd8QNrtbU5UUmvYk_rsEetDrzDBvkeDYSzoab2khcRVKXH5ZBnxy7YIeUO-rxLXu25JlT-Rpm5xW4tftbP8GBVrpW8PeZBUDUUBtyOs4q2yQxhGDBdY8AFOIKrrZOEIGst4N1kNErZnF5wvtrzho:1ttaO9:6U15skntm8ALw6lbiLxi4tIEsCVR0bEwNomgQQ7Acds",
+    "expire_date": "2025-03-29T22:53:53.529Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ujp6pns9q2aj3ayp7jxhwddxh6ptpmn4",
+  "fields": {
+    "session_data": ".eJxVjMsKwjAQAP8lZwnNu_Hovd8QNrtbU5UUmvYk_rsEetDrzDBvkeDYSzoab2khcRVKXH5ZBnxy7YIeUO-rxLXu25JlT-Rpm5xW4tftbP8GBVrpW8PeZBUDUUBtyOs4q2yQxhGDBdY8AFOIKrrZOEIGst4N1kNErZnF5wvtrzho:1u95vw:GASUh1glBLPt97fX7kQWIhAs4Vw3wpevaUXijB5nCHU",
+    "expire_date": "2025-05-11T17:36:52.718Z"
+  }
+},
+{
+  "model": "core.servicio",
+  "pk": 1,
+  "fields": {
+    "nombre": "Pack Emprendedor",
+    "descripcion": "Landing Page + Web Básico (3 páginas) + Hosting\r\n🚀 Ideal para quienes inician en el mundo digital.",
+    "precio": "100.00",
+    "creado_en": "2025-02-16T12:56:58.608Z"
+  }
+},
+{
+  "model": "core.servicio",
+  "pk": 2,
+  "fields": {
+    "nombre": "Pack Profesional",
+    "descripcion": "Landing Page + Web Avanzado (5-10 páginas) + Hosting\r\nPerfecto para negocios que buscan mostrar más contenido y profesionalismo.",
+    "precio": "200.00",
+    "creado_en": "2025-02-16T16:00:55.359Z"
+  }
+},
+{
+  "model": "core.servicio",
+  "pk": 3,
+  "fields": {
+    "nombre": "Pack Conexión",
+    "descripcion": "Web Avanzado (5-10 páginas) + Login + Formulario de Contacto (Base de Datos)\r\nDiseñado para conectarte directamente con tus usuarios.",
+    "precio": "350.00",
+    "creado_en": "2025-02-16T16:01:52.829Z"
+  }
+},
+{
+  "model": "core.servicio",
+  "pk": 4,
+  "fields": {
+    "nombre": "Pack Ecommerce",
+    "descripcion": "Tienda Online Completa + Carrito + Pasarela de Pago + Login + Contacto + Hosting\r\n¡Transforma tu idea en un negocio online exitoso!",
+    "precio": "500.00",
+    "creado_en": "2025-02-16T16:02:40.816Z"
+  }
+},
+{
+  "model": "core.proyecto",
+  "pk": 1,
+  "fields": {
+    "titulo": "Ecommerce Everyday Glows",
+    "descripcion": "E-commerce creada para la venta de productos, con diseño responsivo, minimalista e integración con redes sociales. \r\nCuenta con carrito de compra, formulario de contacto, sección de reviews, pasarela de pagos (Paypal).\r\nEste proyecto se desarrollo en shopify para mayor comodidad y eficiencia del cliente.",
+    "imagen": "proyectos/Captura_desde_2024-12-01_19-36-50.png",
+    "enlace": "https://everydayglows.com/",
+    "creado_en": "2025-02-16T17:59:11.297Z"
+  }
+},
+{
+  "model": "core.proyecto",
+  "pk": 2,
+  "fields": {
+    "titulo": "Blog de prueba",
+    "descripcion": "Proyecto de Blog con fin educativo, en el cual se implementaron tecnologias de HTML, CSS y JavaScript.",
+    "imagen": "proyectos/Captura_desde_2025-02-22_16-28-32.png",
+    "enlace": "https://jesusfelipeb-blogcafe.netlify.app/",
+    "creado_en": "2025-02-22T19:29:05.464Z"
+  }
+},
+{
+  "model": "core.proyecto",
+  "pk": 3,
+  "fields": {
+    "titulo": "Frontend Festival",
+    "descripcion": "Frontend de muestra para evento, este proyecto se realizo con HTML, CSS y JavaScript. El proyecto es una plantilla de prueba, actualmente no cuenta con ninguna funcionalidad.",
+    "imagen": "proyectos/Captura_desde_2025-02-22_16-31-44.png",
+    "enlace": "https://festivalproyect.netlify.app/",
+    "creado_en": "2025-02-22T19:32:03.337Z"
+  }
+},
+{
+  "model": "core.proyecto",
+  "pk": 4,
+  "fields": {
+    "titulo": "Sitio Web Profesional",
+    "descripcion": "Sitio web para un profesional de la salud, quien buscaba posicionar su marca personal en el mundo digital para acompañar sus redes sociales. Este sitio muestra información y comparte una experiencia completa para el usuario.",
+    "imagen": "proyectos/Captura_desde_2025-04-06_23-16-59.png",
+    "enlace": "https://www.drlopezmoris.com/",
+    "creado_en": "2025-04-27T17:39:11.518Z"
+  }
+},
+{
+  "model": "core.contacto",
+  "pk": 1,
+  "fields": {
+    "nombre": "felipe",
+    "email": "correo@correo.com",
+    "telefono": "",
+    "mensaje": "proyecto sintergia",
+    "fecha": "2025-03-04T19:19:09.002Z"
+  }
+},
+{
+  "model": "core.contacto",
+  "pk": 2,
+  "fields": {
+    "nombre": "Deise",
+    "email": "Deise@correo.com",
+    "telefono": "123456",
+    "mensaje": "Deise",
+    "fecha": "2025-03-04T19:42:52.212Z"
+  }
+},
+{
+  "model": "core.contacto",
+  "pk": 3,
+  "fields": {
+    "nombre": "Raul",
+    "email": "raul@raul.com",
+    "telefono": "125874582",
+    "mensaje": "ahabkb",
+    "fecha": "2025-03-15T22:48:27.866Z"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add log entry",
+    "content_type": [
+      "admin",
+      "logentry"
+    ],
+    "codename": "add_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change log entry",
+    "content_type": [
+      "admin",
+      "logentry"
+    ],
+    "codename": "change_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete log entry",
+    "content_type": [
+      "admin",
+      "logentry"
+    ],
+    "codename": "delete_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view log entry",
+    "content_type": [
+      "admin",
+      "logentry"
+    ],
+    "codename": "view_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add permission",
+    "content_type": [
+      "auth",
+      "permission"
+    ],
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change permission",
+    "content_type": [
+      "auth",
+      "permission"
+    ],
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": [
+      "auth",
+      "permission"
+    ],
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view permission",
+    "content_type": [
+      "auth",
+      "permission"
+    ],
+    "codename": "view_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add group",
+    "content_type": [
+      "auth",
+      "group"
+    ],
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change group",
+    "content_type": [
+      "auth",
+      "group"
+    ],
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete group",
+    "content_type": [
+      "auth",
+      "group"
+    ],
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view group",
+    "content_type": [
+      "auth",
+      "group"
+    ],
+    "codename": "view_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add user",
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "codename": "add_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change user",
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "codename": "change_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete user",
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "codename": "delete_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view user",
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "codename": "view_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add content type",
+    "content_type": [
+      "contenttypes",
+      "contenttype"
+    ],
+    "codename": "add_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change content type",
+    "content_type": [
+      "contenttypes",
+      "contenttype"
+    ],
+    "codename": "change_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete content type",
+    "content_type": [
+      "contenttypes",
+      "contenttype"
+    ],
+    "codename": "delete_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view content type",
+    "content_type": [
+      "contenttypes",
+      "contenttype"
+    ],
+    "codename": "view_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add session",
+    "content_type": [
+      "sessions",
+      "session"
+    ],
+    "codename": "add_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change session",
+    "content_type": [
+      "sessions",
+      "session"
+    ],
+    "codename": "change_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete session",
+    "content_type": [
+      "sessions",
+      "session"
+    ],
+    "codename": "delete_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view session",
+    "content_type": [
+      "sessions",
+      "session"
+    ],
+    "codename": "view_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add servicio",
+    "content_type": [
+      "core",
+      "servicio"
+    ],
+    "codename": "add_servicio"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change servicio",
+    "content_type": [
+      "core",
+      "servicio"
+    ],
+    "codename": "change_servicio"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete servicio",
+    "content_type": [
+      "core",
+      "servicio"
+    ],
+    "codename": "delete_servicio"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view servicio",
+    "content_type": [
+      "core",
+      "servicio"
+    ],
+    "codename": "view_servicio"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add proyecto",
+    "content_type": [
+      "core",
+      "proyecto"
+    ],
+    "codename": "add_proyecto"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change proyecto",
+    "content_type": [
+      "core",
+      "proyecto"
+    ],
+    "codename": "change_proyecto"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete proyecto",
+    "content_type": [
+      "core",
+      "proyecto"
+    ],
+    "codename": "delete_proyecto"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view proyecto",
+    "content_type": [
+      "core",
+      "proyecto"
+    ],
+    "codename": "view_proyecto"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add contacto",
+    "content_type": [
+      "core",
+      "contacto"
+    ],
+    "codename": "add_contacto"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change contacto",
+    "content_type": [
+      "core",
+      "contacto"
+    ],
+    "codename": "change_contacto"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete contacto",
+    "content_type": [
+      "core",
+      "contacto"
+    ],
+    "codename": "delete_contacto"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view contacto",
+    "content_type": [
+      "core",
+      "contacto"
+    ],
+    "codename": "view_contacto"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add blacklisted token",
+    "content_type": [
+      "token_blacklist",
+      "blacklistedtoken"
+    ],
+    "codename": "add_blacklistedtoken"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change blacklisted token",
+    "content_type": [
+      "token_blacklist",
+      "blacklistedtoken"
+    ],
+    "codename": "change_blacklistedtoken"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete blacklisted token",
+    "content_type": [
+      "token_blacklist",
+      "blacklistedtoken"
+    ],
+    "codename": "delete_blacklistedtoken"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view blacklisted token",
+    "content_type": [
+      "token_blacklist",
+      "blacklistedtoken"
+    ],
+    "codename": "view_blacklistedtoken"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can add outstanding token",
+    "content_type": [
+      "token_blacklist",
+      "outstandingtoken"
+    ],
+    "codename": "add_outstandingtoken"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can change outstanding token",
+    "content_type": [
+      "token_blacklist",
+      "outstandingtoken"
+    ],
+    "codename": "change_outstandingtoken"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can delete outstanding token",
+    "content_type": [
+      "token_blacklist",
+      "outstandingtoken"
+    ],
+    "codename": "delete_outstandingtoken"
+  }
+},
+{
+  "model": "auth.permission",
+  "fields": {
+    "name": "Can view outstanding token",
+    "content_type": [
+      "token_blacklist",
+      "outstandingtoken"
+    ],
+    "codename": "view_outstandingtoken"
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$870000$u7pbLmnfIHKHr2wZnRLoVS$homOM1XVakOia32Qv6IY8z6A7wA5HHNoekG3PO20Vhk=",
+    "last_login": "2025-04-27T17:36:52.713Z",
+    "is_superuser": true,
+    "username": "felipe",
+    "first_name": "",
+    "last_name": "",
+    "email": "jesusbecerra91@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-02-01T18:19:14.947Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2025-02-16T17:59:11.299Z",
+    "user": [
+      "felipe"
+    ],
+    "content_type": [
+      "core",
+      "proyecto"
+    ],
+    "object_id": "1",
+    "object_repr": "Ecommerce Everyday Glows",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2025-02-22T19:29:05.466Z",
+    "user": [
+      "felipe"
+    ],
+    "content_type": [
+      "core",
+      "proyecto"
+    ],
+    "object_id": "2",
+    "object_repr": "Blog de prueba",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2025-02-22T19:32:03.339Z",
+    "user": [
+      "felipe"
+    ],
+    "content_type": [
+      "core",
+      "proyecto"
+    ],
+    "object_id": "3",
+    "object_repr": "Frontend Festival",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2025-04-27T17:39:11.521Z",
+    "user": [
+      "felipe"
+    ],
+    "content_type": [
+      "core",
+      "proyecto"
+    ],
+    "object_id": "4",
+    "object_repr": "Sitio Web Profesional",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+}
+]
