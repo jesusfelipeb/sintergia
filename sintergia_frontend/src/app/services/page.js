@@ -12,18 +12,33 @@ function ServicesPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchServices = async () => {
+    const fetchServices = async () => { // Usamos async/await para claridad
       try {
-        const response = await fetch('http://localhost:8000/api/servicios/');
+        setLoading(true);
+        setError(null); // Resetear error en cada intento
+
+        // ** --- CORRECCIÓN CLAVE: Usar la variable de entorno --- **
+        // Leemos la URL base del backend desde la variable de entorno.
+        // Si no está definida (desarrollo local sin .env.local), usamos la URL local como fallback.
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'; // Usamos localhost:8000 como respaldo aquí por consistencia con tu código original
+
+        // Construimos la URL completa del endpoint de la API concatenando la URL base
+        // (leída de la variable de entorno o el fallback) con la ruta específica de la API.
+        const response = await fetch(`${backendUrl}/api/servicios/`); // <-- ¡Usar la URL construida!
+
         if (!response.ok) {
-          throw new Error('Error al cargar los servicios');
+           const errorText = response.statusText || 'Error desconocido al cargar los servicios';
+          throw new Error(`HTTP error ${response.status}: ${errorText}`);
         }
+
         const data = await response.json();
         setServices(data);
+
       } catch (err) {
-        setError(err.message);
+        console.error('Error al obtener servicios:', err); // Loggea el objeto error para más detalles
+        setError(err.message); // Guarda solo el mensaje de error
       } finally {
-        setLoading(false);
+        setLoading(false); // Asegura que el estado de carga termine
       }
     };
 

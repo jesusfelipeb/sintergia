@@ -15,21 +15,37 @@ function Portfolio() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/proyectos/")
-      .then((response) => {
+    const fetchProyectos = async () => { // Usamos async/await para un manejo más limpio
+      try {
+        setLoading(true);
+        setError(null); // Resetear error en cada intento
+
+        // ** --- CORRECCIÓN CLAVE: Usar la variable de entorno --- **
+        // Leemos la URL base del backend desde la variable de entorno.
+        // Si no está definida (desarrollo local sin .env.local), usamos la URL local como fallback.
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'; // Usamos localhost:8000 como respaldo aquí
+
+        // Construimos la URL completa del endpoint de la API concatenando la URL base
+        // (leída de la variable de entorno o el fallback) con la ruta específica de la API.
+        const response = await fetch(`${backendUrl}/api/proyectos/`); // <-- ¡Usar la URL construida!
+
         if (!response.ok) {
-          throw new Error("Error al cargar proyectos");
+          const errorText = response.statusText || 'Error desconocido al cargar proyectos';
+          throw new Error(`HTTP error ${response.status}: ${errorText}`);
         }
-        return response.json();
-      })
-      .then((data) => {
+
+        const data = await response.json();
         setProyectos(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
+
+      } catch (error) { // Capturamos el objeto error completo
+        console.error('Error al obtener proyectos:', error); // Loggea el objeto error para más detalles
+        setError(error.message); // Guarda solo el mensaje de error para el estado
+      } finally {
+        setLoading(false); // Asegura que el estado de carga termine
+      }
+    };
+
+    fetchProyectos();
   }, []);
 
   if (loading) return <p className="text-center py-8">Cargando proyectos...</p>;

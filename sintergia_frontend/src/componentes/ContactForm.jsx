@@ -23,7 +23,13 @@ export default function ContactForm() {
     e.preventDefault(); // Evita recargar la página
 
     try {
-      const response = await fetch("http://localhost:8000/api/contacto/", {
+      // ** --- CORRECCIÓN CLAVE: Usar la variable de entorno --- **
+      // Leemos la URL base del backend desde la variable de entorno.
+      // Si no está definida (desarrollo local sin .env.local), usamos la URL local como fallback.
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+
+      // Construimos la URL completa del endpoint de la API
+      const response = await fetch(`${backendUrl}/api/contacto/`, { // <-- ¡Usar la URL construida!
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -34,10 +40,16 @@ export default function ContactForm() {
         // Limpia el formulario
         setFormData({ nombre: "", email: "", telefono: "", mensaje: "" });
       } else {
-        alert("Error al enviar el formulario");
+        // Mejora en el manejo de errores: intentar leer el mensaje de error del backend
+        const errorData = await response.json().catch(() => ({})); // Intenta parsear JSON, si falla usa un objeto vacío
+        const errorMessage = errorData.detail || errorData.message || `Error al enviar el formulario: ${response.status} ${response.statusText}`;
+        alert(errorMessage);
+        console.error("Error al enviar el formulario:", response.status, response.statusText, errorData);
       }
     } catch (error) {
       console.error("Error en el envío:", error);
+      // Mostrar el mensaje de error de red/fetch
+      alert("Error en el envío: " + error.message);
     }
   };
 
