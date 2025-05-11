@@ -31,8 +31,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env*
-
+.env
+.env.local
 # vercel
 .vercel
 
@@ -40,5 +40,20 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 # Ignorar entorno virtual
-/mi_entorno/
+mi_entorno/
+.venv/
 
+# Ignorar archivos cache de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignorar bases de datos locales (si usas sqlite)
+*.sqlite3
+
+# Ignorar archivos de medios subidos localmente (si usas MEDIA_ROOT local)
+media/
+
+# Ignorar archivos de volcado de base de datos (como data.json), a menos que los necesites temporalmente para un commit específico
+ data.json
+# *.json # Si quieres ignorar todos los archivos json en general
