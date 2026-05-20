@@ -1,0 +1,175 @@
+{
+  "$schema": "../src/lib/config-schema.json",
+
+  "business": {
+    "name": "Sintergia Studio",
+    "legal_name": "Sintergia Studio",
+    "tagline": "Bots y automatizaciones para su negocio",
+    "short_description": "Chatbots de WhatsApp, automatizaciones y páginas web para profesionales y negocios locales. Ahorre tiempo, atienda mejor, venda más.",
+    "profession_type": "agencia_ia",
+    "language": "es-AR",
+    "tone": "usted_venezolano_sobrio",
+    "founded_year": 2026,
+    "url": "https://sintergia.vercel.app"
+  },
+
+  "contact": {
+    "whatsapp_number": "5491132924310",
+    "phone_e164": "+5491132924310",
+    "whatsapp_default_message": "Hola, me gustaría más información sobre los bots de Sintergia.",
+    "email": null,
+    "calendar_url": null,
+    "social": {
+      "twitter": null,
+      "instagram": null,
+      "linkedin": null
+    }
+  },
+
+  "location": {
+    "type": "service_area",
+    "country": "AR",
+    "service_areas": [
+      "Ciudad Autónoma de Buenos Aires",
+      "Argentina",
+      "LATAM (remoto)"
+    ],
+    "in_person_city": "Ciudad Autónoma de Buenos Aires",
+    "in_person_country": "AR",
+    "currency": "USD"
+  },
+
+  "services": {
+    "primary": {
+      "name": "Bots con IA",
+      "description": "Chatbots de WhatsApp que atienden a sus clientes 24/7, responden preguntas frecuentes, agendan citas y filtran leads."
+    },
+    "complementary": [
+      {
+        "name": "Sitios web",
+        "description": "Landing pages profesionales en Next.js"
+      },
+      {
+        "name": "E-commerce",
+        "description": "Tiendas online con Tiendanube o Shopify"
+      },
+      {
+        "name": "Automatizaciones integrales",
+        "description": "Conectar herramientas, eliminar tareas repetitivas con n8n"
+      }
+    ],
+    "tiers": [
+      {
+        "name": "Arranque",
+        "slug": "arranque",
+        "price": "USD 600",
+        "monthly": "USD 80/mes",
+        "popular": false,
+        "features": [
+          "Bot de WhatsApp con respuestas automáticas",
+          "Hasta 50 preguntas frecuentes configuradas",
+          "Mensajes de bienvenida y fuera de horario",
+          "Panel básico de métricas",
+          "Soporte por email"
+        ]
+      },
+      {
+        "name": "Profesional",
+        "slug": "profesional",
+        "price": "USD 1.500",
+        "monthly": "USD 120/mes",
+        "popular": true,
+        "features": [
+          "Todo lo de Arranque",
+          "Agenda de citas integrada",
+          "Integración con herramientas del negocio",
+          "Bot con inteligencia artificial",
+          "Respuestas personalizadas por contexto",
+          "Soporte prioritario"
+        ]
+      },
+      {
+        "name": "Integral",
+        "slug": "integral",
+        "price": "USD 3.000",
+        "monthly": "USD 200/mes",
+        "popular": false,
+        "features": [
+          "Todo lo de Profesional",
+          "Landing page profesional",
+          "Automatizaciones de procesos internos",
+          "Integración multi-canal",
+          "Reportes avanzados",
+          "Soporte dedicado con SLA"
+        ]
+      }
+    ]
+  },
+
+  "process": [
+    "Conversación inicial para entender el negocio y sus necesidades",
+    "Diseño y desarrollo del bot/automatización (1-2 semanas según el plan)",
+    "Pruebas con el cliente antes de activar",
+    "Activación y acompañamiento durante el primer mes",
+    "Soporte continuo y mejoras mensuales"
+  ],
+
+  "cases": [
+    {
+      "name": "Banana Express",
+      "vertical": "verdulería + delivery",
+      "location": "Palermo, Buenos Aires",
+      "description": "Bot de WhatsApp que maneja pedidos, consultas de disponibilidad y horarios. Redujo las llamadas repetitivas y liberó tiempo del equipo.",
+      "is_real": true
+    }
+  ],
+
+  "guarantees": [
+    "Sin contratos",
+    "Resultados 1ª semana",
+    "Setup en 48hs"
+  ],
+
+  "scarcity": {
+    "monthly_capacity": 3,
+    "label": "3 negocios/mes"
+  },
+
+  "agent": {
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "temperature": 0.7,
+    "max_messages_per_session": 20,
+    "max_chars_per_message": 500,
+    "max_tokens_response": 400,
+    "suggested_questions": [
+      "¿Qué servicios ofrecen?",
+      "¿Cuánto cuesta un bot?",
+      "¿Cómo es el proceso de trabajo?",
+      "Quiero automatizar mi negocio"
+    ],
+    "lead_signals": [
+      "precio", "costo", "cuánto", "cuanto", "presupuesto",
+      "contratar", "quiero", "necesito", "interesa",
+      "whatsapp", "contactar", "reunión", "reunion", "llamar",
+      "negocio", "empresa", "consultorio", "local",
+      "bot", "automatizar", "automatización"
+    ],
+    "lead_signals_min_matches": 2,
+    "lead_signals_min_user_messages": 2
+  },
+
+  "rules": {
+    "do_use_pronoun": "usted",
+    "do_not_mention": [
+      "Soberanía Total",
+      "Bitcoin",
+      "Venezuela",
+      "filosofía",
+      "trading"
+    ],
+    "no_invented_data": true,
+    "no_discounts": true,
+    "redirect_complex_to_whatsapp": true
+  }
+}

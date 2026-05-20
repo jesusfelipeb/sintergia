@@ -1,9 +1,14 @@
 # Sintergia · Manual de Claude Code
 
+> **Para retomar contexto, leer primero `ROADMAP.md` y `ESTADO.md`. Después este archivo.**
+> **Pivot 2026-05-07:** Sintergia es el dogfood de Mediagent. Toda feature nueva valida la promesa de Mediagent.
+
 ## Qué es Sintergia
 Empresa de servicios tecnológicos (bots, automatizaciones, landings, e-commerce) para profesionales locales y emprendedores latinos.
 Pricing bots: USD 600 / 1500 / 3000 setup + recurrente desde USD 80/mes.
 Servicios complementarios: Sitios web, E-commerce (Tiendanube/Shopify), Automatizaciones integrales.
+
+**Servicio:** 100% remoto, con reuniones presenciales en CABA.
 
 **Separación crítica:** Sintergia ≠ Soberanía Total. Marcas hermanas, no padre/hijo. Esta landing y materiales comerciales NO mencionan Soberanía Total, Bitcoin, Venezuela ni filosofía.
 
@@ -61,9 +66,12 @@ Migración completa a modo oscuro inspirado en el logo institucional ciber-geom�
 
 ## Estructura del proyecto
 ```
+config/
+└── sintergia.json            ⭐ Fuente única de verdad (negocio, agente, reglas)
+
 src/
 ├── app/
-│   ├── api/chat/route.ts    ← Groq streaming endpoint
+│   ├── api/chat/route.ts    ← Groq streaming + filtro stream del marker ---META--- + clasificación → webhook N8N
 │   ├── layout.tsx            ← root layout (fonts, metadata, FloatingWhatsApp)
 │   ├── page.tsx              ← landing (todas las secciones)
 │   └── globals.css           ← paleta dark tech + keyframes float
@@ -72,21 +80,82 @@ src/
 │   ├── sections/             ← Hero, Problema, ComoFunciona, OtrosServicios, Casos, Planes, AgentSection, CTAFinal
 │   └── layout/               ← Nav, Footer
 ├── lib/
-│   └── constants.ts          ← WhatsApp, tiers, system prompt (con cross-selling), suggested questions
+│   ├── config.ts             ⭐ Zod schema + loader del config.json + helpers (whatsappLink, whatsappUrl)
+│   ├── agent-prompt.ts       ⭐ Construye system prompt dinámicamente desde config (incluye protocolo tag JSON)
+│   └── constants.ts          Re-exports desde config (compat con componentes existentes)
 ├── types/
 │   └── index.ts              ← Message, Tier, FAQItem
 └── public/
-    └── hero.png              ← imagen hero (AI assistant en smartphone)
+    └── hero.png              ← imagen hero
+
+infra/
+├── docker-compose.yml                  ← N8N + postgres + redis + whatsapp-bot + evolution-* (7 servicios)
+├── init-db.sql
+├── .env                                Variables (gitignored) — secrets de cada servicio
+├── workflow-lead-capture.json          v1 (Telegram only, INACTIVO, respaldo)
+├── workflow-lead-capture-v2.json       ⭐ v2 ACTIVO (Telegram + Sheets en paralelo)
+├── workflow-whatsapp-evolution.json    ⭐ Workflow para Evolution API (10 nodos con auth apikey)
+├── SHEETS_SETUP.md                     Guía Google Sheets OAuth + N8N
+├── EVOLUTION_SETUP.md                  ⭐ Guía Evolution API + QR + workflow + test
+├── Dockerfile.evolution                Build custom (fallback si latest falla, no usado por default)
+└── whatsapp-bot/
+    ├── Dockerfile                      Node 22 Alpine + Baileys 7
+    ├── package.json
+    └── index.js                        Baileys 7 + Groq + QR web panel + lead detection
 ```
 
-## Componentes
-- `Button` (variants: primary, ghost, whatsapp; sizes: default, lg; dark theme con shadow accent)
-- `Section` (wrapper con padding, alt bg opcional)
-- `SectionHeading` (título display + subtítulo)
-- `Chat` (client component, streaming, chips sugeridos, burbujas cyan/glass, auto-scroll interno, fallback WA)
-- `FloatingWhatsApp` (botón fijo bottom-right, aparece después de 300px scroll, animate-ping, tooltip)
-- `Nav` (sticky, backdrop-blur, responsive con hamburger, logo SVG mask)
-- `Footer` (dark, glow sutil, logo SVG mask)
+## ROADMAP.md y ESTADO.md
+- `ROADMAP.md` — plan vigente en olas (1 decisiones, 2 dogfood Mediagent, 3 mejoras a Mediagent, 4 producción)
+- `ESTADO.md` — snapshot del avance al cierre de cada sesión
+
+## Componentes (post-rediseño v3 — 2026-05-19)
+
+### Floating controls
+- `FloatingControls` — orchestrator client. State `chatOpen` compartido + listener global `sintergia:open-chat`. Renderiza widget + WhatsApp.
+- `FloatingChatWidget` — burbuja cyan bottom-right siempre visible + speech bubble persistente dismissible ("¿Tenés dudas? Habla con nuestro agente.") + panel expandible (mobile bottom-sheet 85svh con backdrop, desktop panel 380×580). ESC cierra. iOS safe-area aware.
+- `FloatingWhatsApp` — bottom-left (movido de right). Acepta `hideOnMobileChatOpen` para no competir con el widget en mobile.
+
+### UI
+- `Button` — variants: primary, ghost, whatsapp. Es `<a>` con `extends ComponentProps<"a">` → acepta `onClick` para casos como abrir el chat widget.
+- `Chat` — streaming Groq + filter META tag + prop `variant: "standalone" | "embedded"`. Standalone = card propia. Embedded = sin wrapper (lo usa FloatingChatWidget).
+- `BackgroundPattern` — server-friendly. Variantes `dots` / `dots-sparse` / `grid` / `lines`. Props `intensity` y `mask` (`radial` / `top` / `none`). Usado en todas las secciones para ritmo visual alternado.
+
+### Layout
+- `Nav` — 3 links (Servicios / Planes / Portafolio) + CTA Contáctenos. Sticky backdrop-blur.
+- `Footer` — 3 columnas mono editorial minimalista.
+
+### Sections (todas rediseñadas v3 con eyebrow numerado `§ NN`)
+- `Hero` — aurora animada framer-motion (3 blobs) + grain + dot grid + h1 con highlight cyan rotado + phone con conversación staggered + sidecards desktop + marquee horizontal infinite
+- `Problema` (§ 01) — grid newspaper `gap-px` con números editoriales + glyphs (☏ ◷ ↻)
+- `ComoFunciona` (§ 02) — 3 pasos con número Inter Tight, central highlight cyan + badge "Core"
+- `OtrosServicios` (§ 03) — featured card Agentes IA + mini chat rotado + 4 cards complementarios
+- `Portafolio` (§ 04, NUEVA) — 6 cards con thumbnails generados (gradient hash + emoji + mock browser)
+- `Planes` (§ 05) — scarcity badge + 3 cards numerados, central elevada con shadow cyan
+- `CTAFinal` — aurora fuerte detrás + h2 con highlight cyan rotado en "su negocio"
+
+### Archivos huérfanos (NO importados, mantener como referencia)
+- `AgentSection.tsx`, `Casos.tsx`, `Section.tsx`, `SectionHeading.tsx`
+
+## Mapeo de IDs (importante para anchor links)
+| Sección | ID | Nav |
+|---|---|---|
+| Problema | `#problema` | — |
+| ComoFunciona (§ 02 El Método) | `#metodo` | — |
+| OtrosServicios (§ 03 Servicios) | `#servicios` | **Servicios →** |
+| Portafolio (§ 04) | `#portafolio` | **Portafolio →** |
+| Planes (§ 05) | `#planes` | **Planes →** |
+
+## Stack tipográfico v3
+- `--font-display` Fraunces (italic muted en palabras secundarias selectivas)
+- `--font-display-tech` **Inter Tight** (h1/h2, números grandes, stats)
+- `--font-body` Plus Jakarta Sans (body)
+- `--font-mono` **JetBrains Mono** (eyebrows, meta, units, tags)
+
+## Tokens semánticos v3 (`globals.css` `@theme`)
+- Surfaces: `--color-bg`, `--color-bg-alt`, `--color-surface`, `--color-surface-2`
+- Accents: `--color-accent` (cyan), `--color-accent-2` (purple), `--color-accent-warm` (lima — usar estratégicamente)
+- Semánticos: `--color-success`, `--color-whatsapp`
+- Safe-area: `--safe-bottom: env(safe-area-inset-bottom, 0px)` — usar en flotantes para iOS
 
 ## WhatsApp
 - Número: +5491132924310
@@ -96,14 +165,18 @@ src/
 - El agente de WhatsApp (IA) es fase 2
 
 ## Chat Agent (Groq)
-- Modelo: Llama 3.3 70B Versatile
+- **Modelo y parámetros desde `config/sintergia.json` → `agent`**:
+  - Llama 3.3 70B Versatile
+  - 20 mensajes/sesión, 500 chars/mensaje, 400 tokens/respuesta, temperature 0.7
 - API key en `.env.local` (GROQ_API_KEY)
-- System prompt en `lib/constants.ts`:
+- System prompt construido dinámicamente en `src/lib/agent-prompt.ts` desde el config:
   - Servicios principales (bots IA) + complementarios (web, e-commerce, automatizaciones)
-  - Cross-selling inteligente: detecta si el lead necesita infraestructura y ofrece combo
-  - Precios, caso Banana Express, proceso, reglas de tono
-- Streaming: raw fetch → SSE → plain text transform
-- Límites: 20 mensajes por sesión, 500 chars por mensaje, 400 tokens max respuesta
+  - Cross-selling inteligente
+  - Precios, casos reales, proceso, reglas de tono
+  - **Protocolo tag JSON al final de cada respuesta:** `---META---\n{"lead_quality":"caliente|tibio|curioso","intent":"agendar|info|demo|soporte"}`
+- Streaming: raw fetch → SSE → filtro on-the-fly del marker `---META---` (no llega al cliente, técnica HOLDBACK por chunk)
+- Clasificación enriquecida en `notifyN8N`: `{lead_quality, intent, source}` con whitelist y fallback a keywords
+- **No notifica a N8N si `lead_quality === "curioso"`** (filtra ruido de visitantes que solo navegan)
 - Burbujas: usuario en cyan (`text-[#040b16]`), asistente en glass (`bg-white/10`)
 
 ## CRO (Optimización de conversión)
@@ -123,11 +196,36 @@ src/
 - Commits con conventional commits (feat/fix/docs/chore/style)
 - Documentar cada decisión no trivial en `DECISIONES.md`
 
-## Fase 2 (post-launch)
-- N8N self-hosted para captura de leads → Google Sheets
-- N8N para notificaciones a Felipe (WhatsApp/email) cuando hay lead caliente
-- Bot de WhatsApp con Groq via N8N (mismo system prompt)
-- Arquitectura: chat web directo a Groq (rápido) + N8N async para workflows
+## Fase 2: Infraestructura de leads + WhatsApp Bot (en progreso)
+
+### Docker stack (`infra/docker-compose.yml`)
+- **PostgreSQL 16** — DB para N8N
+- **Redis 7** — Cache para N8N
+- **N8N** (puerto 5678) — Workflows de leads, webhook activo en `/webhook/lead-capture`
+- **WhatsApp Bot** (puerto 3001) — Bot custom con Baileys 7 + Groq
+
+### WhatsApp Bot (`infra/whatsapp-bot/`)
+- Baileys 7.0.0-rc.9 (ESM, Node 22 Alpine)
+- Groq API directa con system prompt adaptado para calificar leads
+- Panel web QR: `http://localhost:3001/qr` (dark theme, auto-refresh 15s)
+- Detección de leads → webhook async a N8N
+- Auth persistido en volumen Docker `whatsapp_auth`
+- **Estado:** QR funcional, pendiente vincular WhatsApp
+
+### Lead capture flow
+1. Chat web (Vercel) o WhatsApp Bot detectan lead (≥2 señales: precio, negocio, contratar, etc.)
+2. Webhook async POST a N8N (`/webhook/lead-capture`)
+3. N8N procesa → [pendiente: Google Sheets + Telegram a Felipe]
+
+### Notificaciones a Felipe
+- Canal: **Telegram** (no WhatsApp, para separar bot público de notificaciones internas)
+- Datos requeridos: nombre completo, número WhatsApp, tipo de negocio, problema, solución ofrecida
+
+### Decisión revertida (2026-05-07): Evolution API + Baileys 7 paralelo (A/B test)
+- Decisión previa de descartar Evolution se revierte — Sintergia es el experimento de Mediagent.
+- Mediagent vende Evolution como solución default → si Sintergia (dogfood) lo rechaza, hay discrepancia.
+- Plan: Baileys 7 sigue corriendo en puerto 3001. Evolution se agrega en otro puerto. A/B test → decidir cuál mantener.
+- **Pendiente:** Ola 2 paso 4 — `docker-compose.yml` con Evolution + workflow N8N nuevo + `infra/EVOLUTION_SETUP.md`
 
 ## Prohibiciones actuales (runway 90 días, objetivo USD 5K)
 - No sugerir Finara, trading bots, apps nativas

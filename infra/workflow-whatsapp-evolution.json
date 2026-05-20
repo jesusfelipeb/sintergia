@@ -1,0 +1,271 @@
+{
+  "name": "Sintergia - WhatsApp Evolution",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-evolution",
+        "responseMode": "onReceived",
+        "responseCode": 200,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 320],
+      "id": "wa-evo-webhook",
+      "name": "Webhook Evolution",
+      "webhookId": "whatsapp-evolution"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "auth-check",
+              "leftValue": "={{ $json.headers?.apikey }}",
+              "rightValue": "={{ $env.EVOLUTION_API_KEY }}",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [460, 320],
+      "id": "wa-evo-auth",
+      "name": "Verificar apikey"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "event-type",
+              "leftValue": "={{ $json.body.event }}",
+              "rightValue": "messages.upsert",
+              "operator": { "type": "string", "operation": "equals" }
+            },
+            {
+              "id": "not-from-me",
+              "leftValue": "={{ $json.body.data?.key?.fromMe }}",
+              "rightValue": "={{ false }}",
+              "operator": { "type": "boolean", "operation": "equals" }
+            },
+            {
+              "id": "has-text",
+              "leftValue": "={{ $json.body.data?.message?.conversation || $json.body.data?.message?.extendedTextMessage?.text }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [680, 240],
+      "id": "wa-evo-filter",
+      "name": "Filter (msg entrante texto)"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "instance",
+              "value": "={{ $json.body.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "phone",
+              "value": "={{ $json.body.data.key.remoteJid.replace('@s.whatsapp.net','').replace('@c.us','') }}",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "text",
+              "value": "={{ $json.body.data.message.conversation || $json.body.data.message.extendedTextMessage.text }}",
+              "type": "string"
+            },
+            {
+              "id": "4",
+              "name": "push_name",
+              "value": "={{ $json.body.data?.pushName || 'desconocido' }}",
+              "type": "string"
+            },
+            {
+              "id": "5",
+              "name": "timestamp",
+              "value": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [900, 200],
+      "id": "wa-evo-extract",
+      "name": "Extraer mensaje"
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1120, 200],
+      "id": "wa-evo-wait",
+      "name": "Cadencia humana (3s)",
+      "webhookId": "wa-evo-wait-resume"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.GROQ_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Eres el asistente virtual de Sintergia Studio, agencia de bots y automatizaciones en Argentina (servicios remotos, presencial en CABA). Responde en español, usá 'usted' (no tuteo). Planes bots: Arranque USD 600 + 80/mes, Profesional USD 1500 + 120/mes, Integral USD 3000 + 200/mes. Caso real: Banana Express (verdulería Palermo). Reglas: máximo 2-4 oraciones, NO inventar datos, NO mencionar Soberanía Total ni Bitcoin ni Venezuela, NO ofrecer descuentos. Si el visitante quiere contratar, sugerí coordinar reunión por WhatsApp. Al final de cada respuesta agregá una línea separadora '---META---' seguida de un JSON en una línea con {\\\"lead_quality\\\":\\\"caliente|tibio|curioso\\\",\\\"intent\\\":\\\"agendar|info|demo|soporte\\\"}.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.text) }}\n    }\n  ],\n  \"temperature\": 0.7,\n  \"max_tokens\": 400\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 200],
+      "id": "wa-evo-groq",
+      "name": "AI Agent (Groq)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraer respuesta del LLM y separar el tag META\nconst raw = $input.all()[0].json;\nconst lead = $('Extraer mensaje').first().json;\n\nconst content = raw.choices?.[0]?.message?.content || '';\n\n// Separar el texto visible del tag\nconst metaMatch = content.match(/---META---\\s*(\\{[\\s\\S]*?\\})/);\nlet visibleText = content;\nlet classification = { lead_quality: 'curioso', intent: 'info', source: 'fallback' };\n\nif (metaMatch) {\n  visibleText = content.slice(0, metaMatch.index).trim();\n  try {\n    const parsed = JSON.parse(metaMatch[1]);\n    const validQ = ['caliente', 'tibio', 'curioso'];\n    const validI = ['agendar', 'info', 'demo', 'soporte'];\n    classification = {\n      lead_quality: validQ.includes(parsed.lead_quality) ? parsed.lead_quality : 'curioso',\n      intent: validI.includes(parsed.intent) ? parsed.intent : 'info',\n      source: 'llm_tag',\n    };\n  } catch { /* malformed */ }\n}\n\nreturn [{\n  json: {\n    instance: lead.instance,\n    phone: lead.phone,\n    push_name: lead.push_name,\n    user_text: lead.text,\n    reply_text: visibleText,\n    classification,\n    timestamp: lead.timestamp,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 200],
+      "id": "wa-evo-parse",
+      "name": "Parsear respuesta + META"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://evolution-api:8080/message/sendText/{{ $json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.EVOLUTION_API_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $json.phone }}\",\n  \"text\": {{ JSON.stringify($json.reply_text) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 200],
+      "id": "wa-evo-send",
+      "name": "Responder WhatsApp"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [900, 440],
+      "id": "wa-evo-ignored",
+      "name": "Ignorar (no es msg texto entrante)"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [680, 480],
+      "id": "wa-evo-unauthorized",
+      "name": "Rechazado (apikey inválida)"
+    }
+  ],
+  "connections": {
+    "Webhook Evolution": {
+      "main": [
+        [
+          { "node": "Verificar apikey", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Verificar apikey": {
+      "main": [
+        [
+          { "node": "Filter (msg entrante texto)", "type": "main", "index": 0 }
+        ],
+        [
+          { "node": "Rechazado (apikey inválida)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Filter (msg entrante texto)": {
+      "main": [
+        [
+          { "node": "Extraer mensaje", "type": "main", "index": 0 }
+        ],
+        [
+          { "node": "Ignorar (no es msg texto entrante)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Extraer mensaje": {
+      "main": [
+        [
+          { "node": "Cadencia humana (3s)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Cadencia humana (3s)": {
+      "main": [
+        [
+          { "node": "AI Agent (Groq)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "AI Agent (Groq)": {
+      "main": [
+        [
+          { "node": "Parsear respuesta + META", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Parsear respuesta + META": {
+      "main": [
+        [
+          { "node": "Responder WhatsApp", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Argentina/Buenos_Aires"
+  }
+}

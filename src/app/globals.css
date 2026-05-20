@@ -1,31 +1,71 @@
 @import "tailwindcss";
 
+/* ──────────────────────────────────────────────────────────────
+ * Sintergia v3 — Design tokens
+ * Paleta: navy preservado + acento cyan/purple + lima como sazón editorial
+ * Tipos: Fraunces (display dramático) + Inter Tight (display tech) +
+ *        Plus Jakarta Sans (body) + JetBrains Mono (eyebrows/tags/metadata)
+ * ──────────────────────────────────────────────────────────── */
+
 :root {
-  --color-primary: #F8FAFC;
-  --color-primary-dark: #FFFFFF;
-  --color-accent: #00b4d8;
-  --color-accent-dark: #0096b4;
-  --color-purple: #8B5CF6;
+  /* ── Backgrounds & surfaces ── */
   --color-bg: #040b16;
   --color-bg-alt: #0a1526;
+  --color-surface: #0F1830;
+  --color-surface-2: #142340;
+  --color-border: #1e293b;
+
+  /* ── Text ── */
   --color-text: #F8FAFC;
   --color-text-muted: #94a3b8;
-  --color-border: #1e293b;
+  --color-text-faint: rgba(248, 250, 252, 0.55);
+  /* Legacy alias (no romper componentes existentes) */
+  --color-primary: #F8FAFC;
+  --color-primary-dark: #FFFFFF;
+
+  /* ── Accents ── */
+  --color-accent: #00b4d8;
+  --color-accent-dark: #0096b4;
+  --color-accent-2: #8B5CF6;
+  --color-accent-warm: #C7F94A;
+
+  /* ── Semánticos ── */
+  --color-success: #22C55E;
+  --color-whatsapp: #25D366;
 }
 
 @theme inline {
-  --color-primary: var(--color-primary);
-  --color-primary-dark: var(--color-primary-dark);
-  --color-accent: var(--color-accent);
-  --color-accent-dark: var(--color-accent-dark);
-  --color-purple: var(--color-purple);
   --color-bg: var(--color-bg);
   --color-bg-alt: var(--color-bg-alt);
+  --color-surface: var(--color-surface);
+  --color-surface-2: var(--color-surface-2);
+  --color-border: var(--color-border);
+
   --color-text: var(--color-text);
   --color-text-muted: var(--color-text-muted);
-  --color-border: var(--color-border);
+  --color-text-faint: var(--color-text-faint);
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
+
+  --color-accent: var(--color-accent);
+  --color-accent-dark: var(--color-accent-dark);
+  --color-purple: var(--color-accent-2);
+  --color-accent-2: var(--color-accent-2);
+  --color-accent-warm: var(--color-accent-warm);
+
+  --color-success: var(--color-success);
+  --color-whatsapp: var(--color-whatsapp);
+
+  /* ── Tipografía ──
+   * --font-display      Fraunces (serif) — h1 dramáticos, italic muted
+   * --font-display-tech Inter Tight (sans) — h2/h3, stats, números grandes
+   * --font-body         Plus Jakarta (sans) — paragraphs (default)
+   * --font-mono         JetBrains Mono — eyebrows, units, tags, metadata
+   */
   --font-display: var(--font-fraunces);
+  --font-display-tech: var(--font-inter-tight);
   --font-body: var(--font-jakarta);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 body {
@@ -35,6 +75,11 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* iOS safe-area aware bottom para flotantes */
+:root {
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 @keyframes float {
@@ -50,4 +95,13 @@ html {
 .animate-float-delayed {
   animation: float 6s ease-in-out infinite;
   animation-delay: 2s;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }

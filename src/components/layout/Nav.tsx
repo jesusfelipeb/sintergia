@@ -5,9 +5,8 @@ import { whatsappLink } from "@/lib/constants";
 
 const NAV_LINKS = [
   { label: "Servicios", href: "#servicios" },
-  { label: "Casos", href: "#casos" },
   { label: "Planes", href: "#planes" },
-  { label: "Agente", href: "#agente" },
+  { label: "Portafolio", href: "#portafolio" },
 ];
 
 export default function Nav() {

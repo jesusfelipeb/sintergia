@@ -1,0 +1,265 @@
+{
+  "name": "Sintergia - Lead Capture v2",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-capture",
+        "responseMode": "onReceived",
+        "responseCode": 200,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "id": "webhook-lead",
+      "name": "Webhook Lead",
+      "webhookId": "lead-capture"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "fecha",
+              "value": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "fuente",
+              "value": "={{ $json.body.source }}",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "primer_mensaje",
+              "value": "={{ $json.body.firstMessage }}",
+              "type": "string"
+            },
+            {
+              "id": "4",
+              "name": "ultimo_mensaje",
+              "value": "={{ $json.body.lastMessage }}",
+              "type": "string"
+            },
+            {
+              "id": "5",
+              "name": "total_mensajes",
+              "value": "={{ $json.body.messageCount }}",
+              "type": "number"
+            },
+            {
+              "id": "6",
+              "name": "conversacion",
+              "value": "={{ JSON.stringify($json.body.conversation) }}",
+              "type": "string"
+            },
+            {
+              "id": "7",
+              "name": "lead_quality",
+              "value": "={{ $json.body.classification?.lead_quality || 'tibio' }}",
+              "type": "string"
+            },
+            {
+              "id": "8",
+              "name": "intent",
+              "value": "={{ $json.body.classification?.intent || 'info' }}",
+              "type": "string"
+            },
+            {
+              "id": "9",
+              "name": "classification_source",
+              "value": "={{ $json.body.classification?.source || 'unknown' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [480, 300],
+      "id": "format-lead",
+      "name": "Formatear Lead"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst lead = items[0].json;\n\nconst newLead = {\n  id: Date.now(),\n  fecha: lead.fecha,\n  fuente: lead.fuente,\n  lead_quality: lead.lead_quality,\n  intent: lead.intent,\n  classification_source: lead.classification_source,\n  primer_mensaje: lead.primer_mensaje,\n  ultimo_mensaje: lead.ultimo_mensaje,\n  total_mensajes: lead.total_mensajes,\n  conversacion: lead.conversacion,\n  status: 'nuevo'\n};\n\nreturn [{ json: newLead }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [710, 180],
+      "id": "save-lead",
+      "name": "Guardar Lead (Local)"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.GROQ_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Sos un extractor de datos. Analizá la conversación entre un cliente y un agente comercial de Sintergia (empresa de bots y automatizaciones). Devolvé SOLO un JSON válido con estos campos exactos: {\\\"nombre\\\": string|null, \\\"whatsapp\\\": string|null, \\\"negocio\\\": string|null, \\\"problema\\\": string|null, \\\"solucion\\\": string|null}. nombre = nombre completo del cliente si lo dijo. whatsapp = número telefónico si lo dio. negocio = tipo de negocio o profesión (médico, abogado, comerciante, etc). problema = dolor o necesidad que expresó. solucion = qué le ofreció el agente (bot, landing, automatización, plan). Si un dato no aparece, usá null. Respondé SOLO el JSON, sin texto adicional.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.conversacion) }}\n    }\n  ],\n  \"response_format\": {\"type\": \"json_object\"},\n  \"temperature\": 0.1,\n  \"max_tokens\": 400\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [710, 420],
+      "id": "extract-data",
+      "name": "Extraer Datos (Groq)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('Formatear Lead').first().json;\nconst raw = $input.all()[0].json;\n\nlet extracted = {};\ntry {\n  const content = raw.choices && raw.choices[0] && raw.choices[0].message && raw.choices[0].message.content;\n  extracted = content ? JSON.parse(content) : {};\n} catch (e) {\n  extracted = {};\n}\n\nreturn [{\n  json: {\n    fecha: lead.fecha,\n    fuente: lead.fuente,\n    lead_quality: lead.lead_quality,\n    intent: lead.intent,\n    classification_source: lead.classification_source,\n    primer_mensaje: lead.primer_mensaje,\n    ultimo_mensaje: lead.ultimo_mensaje,\n    total_mensajes: lead.total_mensajes,\n    conversacion: lead.conversacion,\n    nombre: extracted.nombre || 'No detectado',\n    whatsapp: extracted.whatsapp || 'No detectado',\n    negocio: extracted.negocio || 'No detectado',\n    problema: extracted.problema || 'No detectado',\n    solucion: extracted.solucion || 'No detectada'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [940, 420],
+      "id": "parse-extraction",
+      "name": "Parsear Extracción"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10",
+              "name": "message",
+              "value": "={{ $json.lead_quality === 'caliente' ? '🔥' : $json.lead_quality === 'tibio' ? '🌡️' : '👀' }} *Lead {{ $json.lead_quality.toUpperCase() }} — Sintergia*\n\n📅 {{ $json.fecha }}\n🎯 Intent: *{{ $json.intent }}*\n📡 Fuente: {{ $json.fuente }}\n💬 Mensajes: {{ $json.total_mensajes }}\n\n👤 *Nombre:* {{ $json.nombre }}\n📱 *WhatsApp:* {{ $json.whatsapp }}\n🏢 *Negocio:* {{ $json.negocio }}\n❓ *Problema:* {{ $json.problema }}\n💡 *Solución ofrecida:* {{ $json.solucion }}\n\n_Primer mensaje:_ {{ $json.primer_mensaje }}\n_Último mensaje:_ {{ $json.ultimo_mensaje }}\n\n_(clasificación: {{ $json.classification_source }})_",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1170, 320],
+      "id": "format-notification",
+      "name": "Formatear Notificación"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot{{ $env.TELEGRAM_BOT_TOKEN }}/sendMessage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"chat_id\": \"{{ $env.TELEGRAM_CHAT_ID }}\",\n  \"text\": {{ JSON.stringify($json.message) }},\n  \"parse_mode\": \"Markdown\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 320],
+      "id": "send-telegram",
+      "name": "Enviar Telegram"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "18Gq-pPc92J4OEppJ71LmmrbU-y8ORlUN-dsXpuNm2eQ",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "fecha": "={{ $json.fecha }}",
+            "fuente": "={{ $json.fuente }}",
+            "lead_quality": "={{ $json.lead_quality }}",
+            "intent": "={{ $json.intent }}",
+            "classification_source": "={{ $json.classification_source }}",
+            "nombre": "={{ $json.nombre }}",
+            "whatsapp": "={{ $json.whatsapp }}",
+            "negocio": "={{ $json.negocio }}",
+            "problema": "={{ $json.problema }}",
+            "solucion_ofrecida": "={{ $json.solucion }}",
+            "total_mensajes": "={{ $json.total_mensajes }}",
+            "primer_mensaje": "={{ $json.primer_mensaje }}",
+            "ultimo_mensaje": "={{ $json.ultimo_mensaje }}",
+            "conversacion": "={{ $json.conversacion }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1170, 540],
+      "id": "sheets-append",
+      "name": "Google Sheets — Leads CRM"
+    }
+  ],
+  "connections": {
+    "Webhook Lead": {
+      "main": [
+        [
+          { "node": "Formatear Lead", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Formatear Lead": {
+      "main": [
+        [
+          { "node": "Guardar Lead (Local)", "type": "main", "index": 0 },
+          { "node": "Extraer Datos (Groq)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Extraer Datos (Groq)": {
+      "main": [
+        [
+          { "node": "Parsear Extracción", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Parsear Extracción": {
+      "main": [
+        [
+          { "node": "Formatear Notificación", "type": "main", "index": 0 },
+          { "node": "Google Sheets — Leads CRM", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Formatear Notificación": {
+      "main": [
+        [
+          { "node": "Enviar Telegram", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Argentina/Buenos_Aires"
+  }
+}

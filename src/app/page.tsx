@@ -4,8 +4,8 @@ import Problema from "@/components/sections/Problema";
 import ComoFunciona from "@/components/sections/ComoFunciona";
 import OtrosServicios from "@/components/sections/OtrosServicios";
 import Casos from "@/components/sections/Casos";
+import Portafolio from "@/components/sections/Portafolio";
 import Planes from "@/components/sections/Planes";
-import AgentSection from "@/components/sections/AgentSection";
 import CTAFinal from "@/components/sections/CTAFinal";
 import Footer from "@/components/layout/Footer";
 
@@ -16,10 +16,9 @@ export default function Home() {
       <Hero />
       <Problema />
       <ComoFunciona />
-      <OtrosServicios />
-      <Casos />
       <Planes />
-      <AgentSection />
+      <OtrosServicios />
+      <Portafolio />
       <CTAFinal />
       <Footer />
     </>

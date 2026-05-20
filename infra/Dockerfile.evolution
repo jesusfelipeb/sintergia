@@ -1,0 +1,18 @@
+FROM atendai/evolution-api:v2.2.3
+
+RUN apk add --no-cache git
+
+# Baileys 6.7.x is blocked by WhatsApp (405 error).
+# Install the latest 6.x commit that includes the protocol fix.
+RUN npm install github:WhiskeySockets/Baileys#fix/web-version --force --legacy-peer-deps 2>/dev/null || \
+    npm install baileys@6.7.12 --force --legacy-peer-deps
+
+# Patch: update WA web version to bypass 405 block
+RUN node -e " \
+  const fs = require('fs'); \
+  const p = require.resolve('baileys/lib/Utils/baileys-version.json'); \
+  const v = JSON.parse(fs.readFileSync(p, 'utf8')); \
+  v.version = [2, 3000, 1017531287]; \
+  fs.writeFileSync(p, JSON.stringify(v)); \
+  console.log('Patched version to:', v.version); \
+" 2>/dev/null || echo "Version patch skipped"

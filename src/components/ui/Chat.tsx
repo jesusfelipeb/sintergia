@@ -4,7 +4,20 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import type { Message } from "@/types";
 import { SUGGESTED_QUESTIONS, whatsappLink } from "@/lib/constants";
 
-export default function Chat() {
+interface ChatProps {
+  /**
+   * - "standalone" (default): card propia con border + glassmorphism. Para AgentSection.
+   * - "embedded": sin wrapper visual. El padre (ej: FloatingChatWidget) provee marco.
+   */
+  variant?: "standalone" | "embedded";
+  /** Altura del área de mensajes. Default: h-80 (standalone) o flex-1 (embedded). */
+  messagesClassName?: string;
+}
+
+export default function Chat({
+  variant = "standalone",
+  messagesClassName,
+}: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -82,11 +95,32 @@ export default function Chat() {
   }
 
   const showChips = messages.length === 0;
+  const embedded = variant === "embedded";
+
+  // ── Estilos según variant ──
+  const wrapperClass = embedded
+    ? "flex flex-col w-full h-full overflow-hidden"
+    : "flex flex-col w-full max-w-lg mx-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-sm overflow-hidden";
+
+  const headerClass = embedded
+    ? "hidden" // El padre embedded provee su propio header
+    : "flex items-center gap-3 px-4 py-3 bg-primary text-white";
+
+  const messagesAreaClass = [
+    "flex flex-col gap-3 p-4 overflow-y-auto scroll-smooth",
+    embedded ? "flex-1 bg-bg-alt/30" : "h-80 bg-bg-alt/50",
+    messagesClassName ?? "",
+  ].join(" ");
+
+  const formClass = [
+    "flex items-center gap-2 p-3 border-t border-white/10",
+    embedded ? "bg-bg-alt/60" : "bg-white/5",
+  ].join(" ");
 
   return (
-    <div className="flex flex-col w-full max-w-lg mx-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-sm overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3 bg-primary text-white">
+    <div className={wrapperClass}>
+      {/* Header solo en standalone */}
+      <div className={headerClass}>
         <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold shadow-inner">
           S
         </div>
@@ -97,13 +131,13 @@ export default function Chat() {
       </div>
 
       {/* Messages */}
-      <div ref={chatContainerRef} className="flex flex-col gap-3 p-4 h-80 overflow-y-auto bg-bg-alt/50 scroll-smooth">
+      <div ref={chatContainerRef} className={messagesAreaClass}>
         {showChips && (
-          <div className="flex flex-col items-center justify-center h-full gap-4">
-            <p className="text-sm text-text-muted text-center">
+          <div className="flex flex-col items-center justify-center flex-1 gap-4 py-6">
+            <p className="text-sm text-text-muted text-center px-4">
               ¿En qué puedo ayudarle?
             </p>
-            <div className="flex flex-wrap justify-center gap-2">
+            <div className="flex flex-wrap justify-center gap-2 px-2">
               {SUGGESTED_QUESTIONS.map((q) => (
                 <button
                   key={q}
@@ -143,10 +177,7 @@ export default function Chat() {
       </div>
 
       {/* Input */}
-      <form
-        onSubmit={handleSubmit}
-        className="flex items-center gap-2 p-3 border-t border-white/10 bg-white/5"
-      >
+      <form onSubmit={handleSubmit} className={formClass}>
         <input
           ref={inputRef}
           type="text"
